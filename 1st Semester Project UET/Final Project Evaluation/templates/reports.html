@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ERP Analytics Pro</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+/* ================= GOOGLE FONT ================= */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ================= ROOT ================= */
+:root{
+--bg:#060816;
+--panel:#0d1326;
+--card:#131c35;
+--card2:#182544;
+--stroke:rgba(255,255,255,0.08);
+
+--primary:#3b82f6;
+--primary2:#5b8cff;
+--purple:#6366f1;
+
+--success:#00ff9d;
+--danger:#ff4d6d;
+--warning:#ffb020;
+
+--glow:0 0 30px rgba(0,212,255,0.35);
+
+--text:#f4f7ff;
+--muted:#8ea0c0;
+
+--radius:22px;
+}
+
+/* ================= GLOBAL ================= */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+background:
+radial-gradient(circle at top left,#101935 0%,transparent 30%),
+radial-gradient(circle at top right,#0a2940 0%,transparent 25%),
+linear-gradient(180deg,#040612,#070b16 100%);
+color:var(--text);
+min-height:100vh;
+overflow-x:hidden;
+}
+
+/* CUSTOM SCROLLBAR */
+::-webkit-scrollbar{
+width:10px;
+}
+
+::-webkit-scrollbar-track{
+background:#0a0f1d;
+}
+
+::-webkit-scrollbar-thumb{
+background:linear-gradient(var(--primary),#006eff);
+border-radius:20px;
+}
+
+/* ================= NAVBAR ================= */
+.navbar{
+height: 64px;
+position:sticky;
+top:0;
+z-index:9999;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding: 0 28px;
+
+background:rgba(9,14,28,0.78);
+backdrop-filter:blur(18px);
+
+border-bottom:1px solid rgba(255,255,255,0.06);
+
+box-shadow:
+0 10px 40px rgba(0,0,0,0.45);
+
+animation:navAnim .5s ease;
+}
+
+/* NAVBAR ANIMATION */
+@keyframes navAnim{
+from{
+opacity:0;
+transform:translateY(-30px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* LOGO */
+.logo a{
+text-decoration:none;
+font-size:22px;
+font-weight:800;
+
+background:linear-gradient(90deg,#3b82f6,#6366f1);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+letter-spacing:.5px;
+}
+
+/* MENU BUTTON */
+.menu{
+width:46px;
+height:46px;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+border-radius:14px;
+
+background:linear-gradient(145deg,#131f3d,#0b1428);
+
+border:1px solid rgba(255,255,255,0.08);
+
+cursor:pointer;
+
+transition:.35s;
+
+font-size:18px;
+color:white;
+
+box-shadow:
+0 8px 20px rgba(0,0,0,0.4);
+}
+
+.menu:hover{
+transform:translateY(-4px) rotate(90deg);
+box-shadow:var(--glow);
+border-color:var(--primary);
+}
+
+/* LINKS */
+.nav-links{
+display:flex;
+gap:12px;
+list-style:none;
+align-items:center;
+}
+
+/* LINK */
+.nav-links li a{
+position:relative;
+
+display:flex;
+align-items:center;
+gap:8px;
+
+padding:12px 16px;
+
+border-radius:14px;
+
+text-decoration:none;
+font-size:14px;
+font-weight:500;
+
+color:var(--muted);
+
+transition:.3s;
+overflow:hidden;
+}
+
+/* LINK HOVER BG */
+.nav-links li a::before{
+content:"";
+position:absolute;
+inset:0;
+
+background:linear-gradient(135deg,
+rgba(0,212,255,0.15),
+rgba(124,77,255,0.15));
+
+opacity:0;
+transition:.3s;
+}
+
+.nav-links li a:hover::before{
+opacity:1;
+}
+
+.nav-links li a:hover{
+color:white;
+transform:translateY(-3px);
+border:1px solid rgba(255,255,255,0.08);
+box-shadow:0 10px 25px rgba(0,0,0,0.35);
+}
+
+/* CLOSE */
+.close{
+display:none;
+font-size:24px;
+cursor:pointer;
+margin-bottom:24px;
+color:white;
+transition:.3s;
+}
+
+.close:hover{
+transform:rotate(90deg);
+color:var(--danger);
+}
+
+/* ================= DASHBOARD ================= */
+.dashboard{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+gap:18px;
+padding:20px;
+}
+
+/* ================= KPI ================= */
+.kpi{
+grid-column:span 12;
+
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:18px;
+}
+
+/* KPI CARD */
+.kpi-card{
+position:relative;
+overflow:hidden;
+
+background:
+linear-gradient(145deg,
+rgba(22,33,63,0.95),
+rgba(10,16,30,0.95));
+
+border:1px solid rgba(255,255,255,0.06);
+
+border-radius:var(--radius);
+
+padding:22px;
+
+cursor:pointer;
+
+transition:.4s;
+
+box-shadow:
+0 15px 40px rgba(0,0,0,0.45);
+}
+
+/* TOP GLOW */
+.kpi-card::before{
+content:"";
+
+position:absolute;
+top:-100px;
+right:-100px;
+
+width:220px;
+height:220px;
+
+background:radial-gradient(circle,
+rgba(0,212,255,0.18),
+transparent);
+
+transition:.5s;
+}
+
+/* BOTTOM LIGHT */
+.kpi-card::after{
+content:"";
+
+position:absolute;
+bottom:-50px;
+left:-50px;
+
+width:160px;
+height:160px;
+
+background:radial-gradient(circle,
+rgba(124,77,255,0.15),
+transparent);
+}
+
+/* HOVER */
+.kpi-card:hover{
+transform:translateY(-10px) scale(1.02);
+
+border-color:rgba(0,212,255,0.4);
+
+box-shadow:
+0 20px 60px rgba(0,0,0,0.5),
+0 0 30px rgba(0,212,255,0.15);
+}
+
+.kpi-card:hover::before{
+transform:scale(1.3);
+}
+
+/* KPI ICON */
+.kpi-icon{
+width:54px;
+height:54px;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+border-radius:16px;
+
+font-size:20px;
+
+background:linear-gradient(135deg,
+rgba(0,212,255,0.18),
+rgba(124,77,255,0.18));
+
+color:var(--primary);
+
+margin-bottom:18px;
+
+box-shadow:
+0 8px 20px rgba(0,0,0,0.35);
+}
+
+/* TITLE */
+.kpi-title{
+font-size:12px;
+font-weight:600;
+letter-spacing:1px;
+text-transform:uppercase;
+color:var(--muted);
+margin-bottom:8px;
+}
+
+/* VALUE */
+.kpi-value{
+font-size:32px;
+font-weight:800;
+line-height:1.1;
+color:white;
+}
+
+/* ================= CHART ================= */
+.chart{
+grid-column:span 8;
+
+background:
+linear-gradient(145deg,
+rgba(17,26,48,0.96),
+rgba(9,14,28,0.96));
+
+border-radius:28px;
+
+padding:24px;
+
+border:1px solid rgba(255,255,255,0.06);
+
+box-shadow:
+0 20px 60px rgba(0,0,0,0.45);
+
+transition:.4s;
+}
+
+.chart:hover{
+box-shadow:
+0 20px 70px rgba(0,0,0,0.55),
+0 0 30px rgba(0,212,255,0.12);
+}
+
+.chart h3{
+font-size:22px;
+margin-bottom:20px;
+}
+
+/* ================= AI PANEL ================= */
+.ai{
+grid-column:span 4;
+
+display:flex;
+flex-direction:column;
+
+height:520px;
+
+background:
+linear-gradient(145deg,
+rgba(17,26,48,0.96),
+rgba(9,14,28,0.96));
+
+border-radius:28px;
+
+border:1px solid rgba(255,255,255,0.06);
+
+overflow:hidden;
+
+box-shadow:
+0 20px 60px rgba(0,0,0,0.45);
+}
+
+/* AI HEADER */
+.ai-header{
+padding:20px;
+
+display:flex;
+align-items:center;
+gap:12px;
+
+border-bottom:1px solid rgba(255,255,255,0.06);
+
+font-size:17px;
+font-weight:700;
+}
+
+/* AI BODY */
+.ai-body{
+flex:1;
+padding:16px;
+overflow:auto;
+}
+
+/* MESSAGE */
+.msg{
+background:
+linear-gradient(145deg,
+rgba(18,28,52,0.9),
+rgba(11,18,36,0.9));
+
+padding:14px;
+
+border-radius:16px;
+
+margin-bottom:14px;
+
+border:1px solid rgba(255,255,255,0.06);
+
+font-size:13px;
+line-height:1.6;
+
+transition:.3s;
+}
+
+.msg:hover{
+transform:translateX(4px);
+border-color:rgba(0,212,255,0.35);
+}
+
+/* INPUT AREA */
+.ai-input{
+padding:16px;
+display:flex;
+gap:10px;
+
+border-top:1px solid rgba(255,255,255,0.06);
+}
+
+/* INPUT */
+input{
+flex:1;
+
+height:50px;
+
+padding:0 16px;
+
+border:none;
+outline:none;
+
+border-radius:16px;
+
+background:#0d152b;
+
+color:white;
+
+border:1px solid rgba(255,255,255,0.08);
+
+font-size:14px;
+
+transition:.3s;
+}
+
+input:focus{
+border-color:var(--primary);
+box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+/* BUTTON */
+button{
+height:50px;
+min-width:56px;
+
+border:none;
+outline:none;
+
+border-radius:16px;
+
+cursor:pointer;
+
+font-size:16px;
+font-weight:700;
+
+background:
+linear-gradient(135deg,
+#3b82f6,
+#006eff);
+
+color:white;
+
+transition:.35s;
+
+box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+button:hover{
+transform:translateY(-3px) scale(1.04);
+box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+/* ================= TABLE ================= */
+.table{
+grid-column:span 12;
+
+background:
+linear-gradient(145deg,
+rgba(17,26,48,0.96),
+rgba(9,14,28,0.96));
+
+border-radius:28px;
+
+padding:24px;
+
+border:1px solid rgba(255,255,255,0.06);
+
+overflow:auto;
+
+box-shadow:
+0 20px 60px rgba(0,0,0,0.45);
+}
+
+.table h3{
+margin-bottom:18px;
+font-size:22px;
+}
+
+/* TABLE */
+table{
+width:100%;
+border-collapse:collapse;
+min-width:700px;
+}
+
+/* TH */
+th{
+padding:18px;
+text-align:left;
+
+font-size:12px;
+font-weight:700;
+
+letter-spacing:1px;
+text-transform:uppercase;
+
+color:var(--primary);
+
+border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+/* TD */
+td{
+padding:18px;
+
+font-size:14px;
+
+border-bottom:1px solid rgba(255,255,255,0.04);
+
+transition:.3s;
+}
+
+/* ROW HOVER */
+tr:hover td{
+background:rgba(0,212,255,0.04);
+}
+
+/* ================= PREDICTIONS ================= */
+.pred{
+grid-column:span 12;
+
+display:grid;
+grid-template-columns:repeat(3,1fr);
+
+gap:18px;
+}
+
+/* CARD */
+.pred-card{
+position:relative;
+overflow:hidden;
+
+padding:24px;
+
+border-radius:24px;
+
+background:
+linear-gradient(145deg,
+rgba(17,26,48,0.96),
+rgba(9,14,28,0.96));
+
+border:1px solid rgba(255,255,255,0.06);
+
+transition:.35s;
+
+box-shadow:
+0 15px 45px rgba(0,0,0,0.4);
+}
+
+.pred-card::before{
+content:"";
+
+position:absolute;
+top:-80px;
+right:-80px;
+
+width:180px;
+height:180px;
+
+background:radial-gradient(circle,
+rgba(0,212,255,0.16),
+transparent);
+}
+
+/* HOVER */
+.pred-card:hover{
+transform:translateY(-8px);
+border-color:rgba(0,212,255,0.3);
+
+box-shadow:
+0 20px 60px rgba(0,0,0,0.5),
+0 0 25px rgba(0,212,255,0.12);
+}
+
+/* HEAD */
+.pred-card h3{
+font-size:18px;
+margin-bottom:12px;
+}
+
+/* TEXT */
+.pred-card p{
+font-size:14px;
+line-height:1.7;
+color:var(--muted);
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:1200px){
+
+.kpi{
+grid-template-columns:repeat(2,1fr);
+}
+
+.chart{
+grid-column:span 12;
+}
+
+.ai{
+grid-column:span 12;
+height:500px;
+}
+
+.pred{
+grid-template-columns:1fr;
+}
+
+}
+
+/* TABLET */
+@media(max-width:768px){
+
+.dashboard{
+padding:14px;
+gap:14px;
+}
+
+.kpi{
+grid-template-columns:1fr;
+}
+
+.kpi-value{
+font-size:28px;
+}
+
+.chart,
+.ai,
+.table,
+.pred-card{
+border-radius:22px;
+}
+
+.nav-links{
+position:fixed;
+
+top:0;
+left:-320px;
+
+width:290px;
+height:100vh;
+
+padding:24px;
+
+flex-direction:column;
+align-items:flex-start;
+
+background:
+linear-gradient(180deg,
+rgba(12,18,36,0.98),
+rgba(5,8,18,0.98));
+
+backdrop-filter:blur(20px);
+
+transition:.4s;
+
+box-shadow:
+10px 0 40px rgba(0,0,0,0.5);
+}
+
+.nav-links.show{
+left:0;
+}
+
+.close{
+display:block;
+}
+
+.nav-links li{
+width:100%;
+}
+
+.nav-links li a{
+width:100%;
+padding:16px;
+font-size:15px;
+}
+
+}
+
+/* MOBILE */
+@media(max-width:480px){
+
+.logo a{
+font-size:18px;
+}
+
+.navbar{
+padding: 0 28px;
+}
+
+.menu{
+width:42px;
+height:42px;
+}
+
+.kpi-card{
+padding:18px;
+}
+
+.kpi-value{
+font-size:24px;
+}
+
+.chart,
+.ai,
+.table{
+padding:18px;
+}
+
+.ai{
+height:450px;
+}
+
+.pred-card{
+padding:20px;
+}
+
+button{
+min-width:52px;
+}
+
+}
+</style>
+</head>
+
+<body>
+ <!-- ================= NAVBAR ================= -->
+<nav class="navbar">
+
+  <!-- LEFT: 3-DOT + LOGO -->
+  <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
+    <div class="menu" onclick="openMenu()">
+      <i class="fa-solid fa-ellipsis-vertical"></i>
+    </div>
+    <a href="/dashboard" style="display:flex;align-items:center;gap:10px;text-decoration:none">
+      <svg width="36" height="36" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="42" height="42" rx="11" fill="#111827"/>
+        <rect x="8" y="26" width="6" height="10" rx="2" fill="#60a5fa"/>
+        <rect x="17" y="19" width="6" height="17" rx="2" fill="#60a5fa" opacity="0.8"/>
+        <rect x="26" y="12" width="6" height="24" rx="2" fill="#60a5fa" opacity="0.9"/>
+        <path d="M10 25 L19 18 L28 11 L32 7" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" fill="none" stroke-dasharray="2 2"/>
+        <circle cx="32" cy="7" r="2.5" fill="#93c5fd"/>
+      </svg>
+      <span style="font-size:1.15rem;font-weight:800;font-family:'Poppins',sans-serif;letter-spacing:-0.5px"><span style="color:#3b82f6">Stock</span><span style="color:#93c5fd">Flow</span></span>
+    </a>
+  </div>
+
+  <!-- LINKS -->
+  <ul class="nav-links" id="navLinks">
+
+    <!-- CLOSE BUTTON -->
+    <div class="close" onclick="closeMenu()">
+      <i class="fa-solid fa-xmark"></i>
+    </div>
+
+    <li><a href="/dashboard"><i class="fa-solid fa-house"></i> Home</a></li>
+    <!-- <li><a href="#"><i class="fa-solid fa-box"></i> Products</a></li> -->
+    <li>
+  <a href="/products">
+    <i class="fa-solid fa-warehouse"></i>
+    Inventory & Billing
+  </a>
+</li>
+    <li><a href="/customers"><i class="fa-solid fa-users"></i> Customers</a></li>
+    <li><a href="/reports"><i class="fa-solid fa-chart-line"></i> Reports</a></li>
+    <!-- <li><a href="#"><i class="fa-solid fa-gear"></i> Settings</a></li> -->
+
+  </ul>
+
+</nav>
+
+<script>
+
+/* OPEN MENU */
+function openMenu(){
+document.getElementById("navLinks").classList.add("show");
+}
+
+/* CLOSE MENU */
+function closeMenu(){
+document.getElementById("navLinks").classList.remove("show");
+}
+
+/* CLICK OUTSIDE CLOSE */
+document.addEventListener("click", function(e){
+let menu = document.getElementById("navLinks");
+let btn = document.querySelector(".menu");
+
+if(!menu.contains(e.target) && !btn.contains(e.target)){
+menu.classList.remove("show");
+}
+});
+
+</script>
+<div class="dashboard">
+
+<!-- ================= KPI ================= -->
+<div class="kpi">
+
+<!-- TOTAL SALES -->
+<!-- <div class="kpi-card">
+    <i class="fa-solid fa-cart-shopping kpi-icon"></i>
+    <div class="kpi-title">TOTAL SALES</div>
+    <div class="kpi-value">0</div>
+</div>  -->
+
+ <!-- TOTAL ORDERS  -->
+<div class="kpi-card">
+    <i class="fa-solid fa-box kpi-icon"></i>
+    <div class="kpi-title">ORDERS</div>
+    <div class="kpi-value">0</div>
+</div>
+
+<!-- REVENUE -->
+<div class="kpi-card">
+    <i class="fa-solid fa-sack-dollar kpi-icon"></i>
+    <div class="kpi-title">REVENUE</div>
+    <div class="kpi-value">0</div>
+</div>
+
+<!-- LOW STOCK -->
+<div class="kpi-card">
+    <i class="fa-solid fa-triangle-exclamation kpi-icon"></i>
+    <div class="kpi-title">LOW STOCK</div>
+    <div class="kpi-value">0</div>
+</div>
+
+<!-- PROFIT --> 
+  <!-- <div class="kpi-card">
+    <i class="fa-solid fa-chart-line kpi-icon"></i>
+    <div class="kpi-title">PROFIT</div>
+    <div class="kpi-value">0</div>
+</div>  -->
+<div class="kpi-card">
+    <i class="fa-solid fa-star kpi-icon"></i>
+    <div class="kpi-title">BEST PRODUCT</div>
+    <div class="kpi-value" id="best">0</div>
+</div>
+
+</div>
+
+<!-- ================= CHART ================= -->
+<div class="chart">
+<h3>Sales Analytics</h3>
+<canvas id="chart"></canvas>
+</div>
+
+<!-- ================= AI ================= -->
+<div class="ai">
+
+<div class="ai-header">
+<i class="fa-solid fa-robot" style="color:var(--primary)"></i>
+<b>AI ANALYST</b>
+</div>
+
+<div class="ai-body" id="chat"></div>
+
+<div class="ai-input">
+<input id="input" placeholder="Ask analytics question...">
+<button onclick="ask()">→</button>
+</div>
+
+</div>
+
+<!-- ================= TABLE ================= -->
+<div class="table">
+<h3>Inventory System</h3>
+
+<table>
+<tr>
+<th>PRODUCT</th>
+<th>PRICE</th>
+<th>STOCK</th>
+<th>SOLD</th>
+<th>STATUS</th>
+</tr>
+
+<tr>
+<td>Mouse</td>
+<td>1200</td>
+<td>15</td>
+<td>50</td>
+<td>OK</td>
+</tr>
+
+<tr>
+<td>Keyboard</td>
+<td>2500</td>
+<td>3</td>
+<td>80</td>
+<td>LOW</td>
+</tr>
+
+<tr>
+<td>Monitor</td>
+<td>20000</td>
+<td>0</td>
+<td>20</td>
+<td>OUT</td>
+</tr>
+
+</table>
+
+</div>
+
+<!-- ================= PREDICTION ================= -->
+<div class="pred">
+
+<div class="pred-card">
+<h3>Sales Forecast</h3>
+<p>+18% growth expected</p>
+</div>
+
+<div class="pred-card">
+<h3>Inventory Risk</h3>
+<p>5 products low stock risk</p>
+</div>
+
+<div class="pred-card">
+<h3>Revenue Forecast</h3>
+<p>+25% increase predicted</p>
+</div>
+
+</div>
+
+</div>
+
+<script>
+    let chartInstance = null;
+
+// ================= KPI LOAD =================
+// ================= KPI =================
+async function loadKPI() {
+
+    try {
+
+        const res = await fetch("/api/reports/kpi");
+        const data = await res.json();
+
+        console.log("KPI DATA:", data);
+
+        const kpi = document.querySelectorAll(".kpi-value");
+
+        // ORDERS
+        kpi[0].innerText = Number(data.orders || 0).toLocaleString();
+
+        // REVENUE
+        kpi[1].innerText = Number(data.revenue || 0).toLocaleString();
+
+        // LOW STOCK (<10)
+        kpi[2].innerText = Number(data.low_stock || 0).toLocaleString();
+
+        // BEST PRODUCT FIX ✔
+        document.getElementById("best").innerText =
+            data.best_product?.name
+            ? `${data.best_product.name} (${data.best_product.sold})`
+            : "No Data";
+
+    } catch (err) {
+        console.log("KPI ERROR:", err);
+    }
+}
+// ================= WEEKLY LINE CHART =================
+async function loadChart() {
+
+    try {
+        const res = await fetch("/api/reports/chart");
+        const data = await res.json();
+
+        const ctx = document.getElementById("chart").getContext("2d");
+
+        if (chartInstance) chartInstance.destroy();
+
+        chartInstance = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: data.labels, // Mon Tue Wed...
+                datasets: [{
+                    label: "Weekly Sales",
+                    data: data.values,
+                    borderColor: "#3b82f6",
+                    backgroundColor: "rgba(0,212,255,0.15)",
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: "#fff"
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: "#8aa0b6" }
+                    },
+                    y: {
+                        ticks: { color: "#8aa0b6" }
+                    }
+                }
+            }
+        });
+
+    } catch (err) {
+        console.log("CHART ERROR:", err);
+    }
+}
+
+
+// ================= AI CHAT FIX =================
+async function ask() {
+
+    let input = document.getElementById("input");
+    let chat = document.getElementById("chat");
+
+    let message = input.value.trim().toLowerCase();
+    if (!message) return;
+
+    chat.innerHTML += `<div class="msg">You: ${input.value}</div>`;
+
+    try {
+
+        const res = await fetch("/api/reports/ai", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: message
+            })
+        });
+
+        const data = await res.json();
+
+        chat.innerHTML += `<div class="msg">AI: ${data.reply}</div>`;
+        chat.scrollTop = chat.scrollHeight;
+
+    } catch (err) {
+        chat.innerHTML += `<div class="msg">AI: Server Error</div>`;
+    }
+
+    input.value = "";
+}
+
+
+// ================= PREDICTIONS =================
+async function loadPredictions() {
+
+    try {
+
+        const res = await fetch("/api/reports/predictions");
+        const data = await res.json();
+
+        if (!data) return;
+
+        const cards = document.querySelectorAll(".pred-card p");
+
+        cards[0].innerText = "Forecast: $" + (data.sales_forecast || 0);
+        cards[1].innerText = "Risk: " + (data.low_stock_products || 0) + " products";
+        cards[2].innerText = "Profit: $" + (data.future_profit || 0);
+
+    } catch (err) {
+        console.log("PREDICTION ERROR:", err);
+    }
+}
+async function loadInventory() {
+
+    const res = await fetch("/api/reports/inventory");
+    const data = await res.json();
+
+    let table = document.querySelector("table");
+
+    let rows = `
+        <tr>
+            <th>PRODUCT</th>
+            <th>PRICE</th>
+            <th>STOCK</th>
+            <th>SOLD</th>
+            <th>STATUS</th>
+        </tr>
+    `;
+
+    data.forEach(p => {
+        rows += `
+        <tr>
+            <td>${p.name}</td>
+            <td>${p.price}</td>
+            <td>${p.stock}</td>
+            <td>${p.sold}</td>
+            <td>${p.status}</td>
+        </tr>`;
+    });
+
+    table.innerHTML = rows;
+}
+
+// ================= INIT =================
+window.onload = function () {
+    loadKPI();
+    loadChart();
+    loadPredictions();
+    loadInventory();
+};
+</script>
+</body>
+</html>

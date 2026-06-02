@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StockFlow — Inventory</title>
+
+<!-- ICONS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+/* ================= GOOGLE FONT ================= */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ================= ROOT DESIGN SYSTEM ================= */
+:root{
+--bg:#070b14;
+--panel:#0c1224;
+--card:#0f1a33;
+--stroke:rgba(255,255,255,0.08);
+
+--primary:#3b82f6;
+--purple:#6366f1;
+--green:#22c55e;
+--red:#ef4444;
+
+--text:#e6edf7;
+--muted:#8aa0b6;
+
+--radius:20px;
+--shadow:0 20px 60px rgba(0,0,0,0.45);
+--glow:0 0 30px rgba(0,212,255,0.25);
+}
+
+/* ================= RESET ================= */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+background:
+radial-gradient(circle at top,#0b1220,#05070f);
+color:var(--text);
+min-height:100vh;
+overflow-x:hidden;
+}
+
+/* ================= NAVBAR (SAME ALL PAGES) ================= */
+.navbar{
+height: 64px;
+position:sticky;
+top:0;
+z-index:999;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding: 0 28px;
+
+background:rgba(12,18,36,0.75);
+backdrop-filter:blur(18px);
+
+border-bottom:1px solid var(--stroke);
+box-shadow:var(--shadow);
+}
+
+.logo a{
+font-size:20px;
+font-weight:800;
+text-decoration:none;
+color:var(--primary);
+}
+
+.menu{
+width:44px;
+height:44px;
+display:flex;
+justify-content:center;
+align-items:center;
+border-radius:12px;
+cursor:pointer;
+
+background:var(--panel);
+border:1px solid var(--stroke);
+
+transition:.3s;
+color:white;
+}
+
+.menu:hover{
+transform:rotate(90deg);
+box-shadow:var(--glow);
+border-color:var(--primary);
+}
+
+.nav-links{
+display:flex;
+gap:14px;
+list-style:none;
+}
+
+.nav-links li a{
+text-decoration:none;
+color:var(--muted);
+padding:10px 14px;
+border-radius:12px;
+font-size:14px;
+display:flex;
+gap:6px;
+align-items:center;
+transition:.3s;
+}
+
+.nav-links li a:hover{
+color:white;
+background:rgba(0,212,255,0.08);
+transform:translateY(-2px);
+}
+
+/* ================= CONTAINER ================= */
+.container{
+display:flex;
+gap:20px;
+padding:20px;
+}
+
+/* ================= LEFT PANEL (FORM) ================= */
+.left{
+width:25%;
+background:rgba(15,26,51,0.8);
+backdrop-filter:blur(18px);
+padding:20px;
+border-radius:var(--radius);
+border:1px solid var(--stroke);
+box-shadow:var(--shadow);
+position:sticky;
+top:80px;
+}
+
+.left h2{
+margin-bottom:15px;
+font-size:18px;
+font-weight:700;
+}
+
+.left input{
+width:100%;
+padding:12px;
+margin-bottom:10px;
+border-radius:12px;
+border:1px solid var(--stroke);
+background:#0b1428;
+color:white;
+outline:none;
+}
+
+.left input:focus{
+border-color:var(--primary);
+box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.left button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+background:linear-gradient(135deg,var(--primary),var(--purple));
+color:white;
+font-weight:700;
+transition:.3s;
+}
+
+.left button:hover{
+transform:translateY(-3px);
+}
+
+/* ================= KPI ================= */
+.kpi{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:16px;
+margin-bottom:20px;
+}
+
+.kpi-card{
+background:rgba(15,26,51,0.8);
+border:1px solid var(--stroke);
+border-radius:var(--radius);
+padding:18px;
+text-align:center;
+transition:.3s;
+box-shadow:var(--shadow);
+}
+
+.kpi-card:hover{
+transform:translateY(-8px);
+box-shadow:var(--glow);
+border-color:var(--primary);
+}
+
+.kpi-card h3{
+font-size:13px;
+color:var(--muted);
+}
+
+.kpi-card span{
+font-size:26px;
+font-weight:800;
+}
+
+/* COLORS */
+.kpi-card:nth-child(1){border-left:4px solid var(--primary);}
+.kpi-card:nth-child(2){border-left:4px solid var(--red);}
+.kpi-card:nth-child(3){border-left:4px solid var(--green);}
+
+/* ================= SEARCH ================= */
+#search{
+width:100%;
+padding:12px;
+border-radius:12px;
+border:1px solid var(--stroke);
+background:#0b1428;
+color:white;
+margin-bottom:15px;
+}
+
+/* ================= GRID ================= */
+#grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:16px;
+width:100%;
+}
+
+/* CARD */
+.card{
+background:rgba(15,26,51,0.8);
+border:1px solid var(--stroke);
+border-radius:var(--radius);
+overflow:hidden;
+transition:.3s;
+box-shadow:var(--shadow);
+}
+
+.card:hover{
+transform:translateY(-8px);
+box-shadow:var(--glow);
+}
+
+.card img{
+width:100%;
+height:160px;
+object-fit:cover;
+}
+
+.card h3{
+padding:10px;
+font-size:16px;
+}
+
+.card p{
+padding:0 10px;
+color:var(--muted);
+font-size:13px;
+}
+
+.card .btns{
+display:flex;
+gap:10px;
+padding:10px;
+}
+
+.card button{
+flex:1;
+padding:10px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-weight:600;
+}
+
+.buy{
+background:var(--green);
+color:white;
+}
+
+.del{
+background:var(--red);
+color:white;
+}
+
+/* ================= BILL BOX ================= */
+#billBox{
+position:fixed;
+right:20px;
+bottom:20px;
+width:340px;
+
+background:rgba(15,26,51,0.9);
+backdrop-filter:blur(18px);
+
+border:1px solid var(--stroke);
+border-radius:var(--radius);
+
+padding:16px;
+
+box-shadow:var(--shadow);
+}
+
+#billBox h2{
+color:var(--primary);
+margin-bottom:10px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:1000px){
+.kpi{grid-template-columns:1fr 1fr;}
+#grid{grid-template-columns:1fr 1fr;}
+.left{width:100%;}
+}
+
+@media(max-width:768px){
+.container{flex-direction:column;}
+#grid{grid-template-columns:1fr;}
+.kpi{grid-template-columns:1fr;}
+.nav-links{
+position:fixed;
+left:-300px;
+top:0;
+width:260px;
+height:100vh;
+flex-direction:column;
+background:#0c1224;
+padding:20px;
+transition:.3s;
+}
+
+.nav-links.show{left:0;}
+}
+
+@media(max-width:480px){
+.kpi{grid-template-columns:1fr;}
+}
+
+/* ================= FONT ================= */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ================= DESIGN SYSTEM ================= */
+:root{
+--bg:#070b14;
+--panel:rgba(12,18,36,0.75);
+--card:rgba(15,26,51,0.75);
+--stroke:rgba(255,255,255,0.08);
+
+--primary:#3b82f6;
+--primary2:#6366f1;
+
+--text:#e6edf7;
+--muted:#94a3b8;
+
+--radius:18px;
+--shadow:0 20px 60px rgba(0,0,0,0.45);
+}
+
+/* ================= RESET ================= */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+background:
+radial-gradient(circle at top,#0b1220,#05070f);
+color:var(--text);
+min-height:100vh;
+overflow-x:hidden;
+}
+
+/* ================= NAVBAR (FIXED REAL SAAS STYLE) ================= */
+.navbar{
+position:sticky;
+top:0;
+z-index:999;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding: 0 28px;
+
+background:rgba(10,15,30,0.75);
+backdrop-filter:blur(18px);
+
+border-bottom:1px solid var(--stroke);
+
+box-shadow:0 10px 40px rgba(0,0,0,0.35);
+}
+
+/* LOGO */
+.logo a{
+font-size:20px;
+font-weight:800;
+text-decoration:none;
+
+background:linear-gradient(90deg,var(--primary),var(--primary2));
+/* -webkit-background-clip:text;  */
+-webkit-text-fill-color:transparent;
+}
+
+/* MENU BUTTON */
+.menu{
+width:44px;
+height:44px;
+display:flex;
+justify-content:center;
+align-items:center;
+
+border-radius:12px;
+
+background:rgba(255,255,255,0.05);
+border:1px solid var(--stroke);
+
+cursor:pointer;
+
+transition:.3s;
+}
+
+.menu:hover{
+transform:rotate(90deg);
+border-color:var(--primary);
+box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+/* NAV LINKS */
+.nav-links{
+display:flex;
+gap:12px;
+list-style:none;
+align-items:center;
+}
+
+.nav-links li a{
+text-decoration:none;
+color:var(--muted);
+
+padding:10px 14px;
+border-radius:12px;
+
+font-size:14px;
+
+transition:.3s;
+}
+
+.nav-links li a:hover{
+color:white;
+background:rgba(0,212,255,0.08);
+transform:translateY(-2px);
+}
+
+/* CLOSE BUTTON */
+.close{
+display:none;
+font-size:22px;
+cursor:pointer;
+color:white;
+}
+
+/* ================= LAYOUT ================= */
+.container{
+display:flex;
+gap:20px;
+padding:20px;
+}
+
+/* ================= LEFT PANEL ================= */
+.left{
+width:25%;
+
+background:var(--card);
+backdrop-filter:blur(18px);
+
+padding:20px;
+
+border-radius:var(--radius);
+border:1px solid var(--stroke);
+
+box-shadow:var(--shadow);
+
+position:sticky;
+top:80px;
+}
+
+.left h2{
+margin-bottom:12px;
+font-size:18px;
+font-weight:700;
+}
+
+.left input{
+width:100%;
+padding:12px;
+
+margin-bottom:10px;
+
+border-radius:12px;
+border:1px solid var(--stroke);
+
+background:rgba(0,0,0,0.2);
+color:white;
+
+outline:none;
+}
+
+.left input:focus{
+border-color:var(--primary);
+box-shadow:0 0 0 3px rgba(0,212,255,0.15);
+}
+
+.left button{
+width:100%;
+padding:12px;
+
+border:none;
+border-radius:12px;
+
+cursor:pointer;
+
+background:linear-gradient(135deg,var(--primary),var(--primary2));
+
+color:white;
+font-weight:700;
+
+transition:.3s;
+}
+
+.left button:hover{
+transform:translateY(-3px);
+}
+
+/* ================= KPI ================= */
+.kpi{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:14px;
+margin-bottom:18px;
+}
+
+.kpi-card{
+background:var(--card);
+border:1px solid var(--stroke);
+
+border-radius:var(--radius);
+
+padding:18px;
+
+text-align:center;
+
+transition:.3s;
+}
+
+.kpi-card:hover{
+transform:translateY(-8px);
+box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+border-color:var(--primary);
+}
+
+.kpi-card h3{
+font-size:12px;
+color:var(--muted);
+}
+
+.kpi-card span{
+font-size:24px;
+font-weight:800;
+}
+
+/* COLORS */
+.kpi-card:nth-child(1){border-left:4px solid var(--primary);}
+.kpi-card:nth-child(2){border-left:4px solid #ef4444;}
+.kpi-card:nth-child(3){border-left:4px solid #22c55e;}
+
+/* ================= SEARCH ================= */
+#search{
+width:100%;
+padding:12px;
+
+border-radius:12px;
+border:1px solid var(--stroke);
+
+background:rgba(0,0,0,0.2);
+color:white;
+
+margin-bottom:14px;
+}
+
+/* ================= GRID ================= */
+#grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:14px;
+}
+
+/* CARD */
+.card{
+background:var(--card);
+border:1px solid var(--stroke);
+
+border-radius:var(--radius);
+
+overflow:hidden;
+
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.card img{
+width:100%;
+height:160px;
+object-fit:cover;
+}
+
+.card h3{
+padding:10px;
+font-size:16px;
+}
+
+.card p{
+padding:0 10px;
+font-size:13px;
+color:var(--muted);
+}
+
+.card .btns{
+display:flex;
+gap:10px;
+padding:10px;
+}
+
+.card button{
+flex:1;
+padding:10px;
+
+border:none;
+border-radius:10px;
+
+cursor:pointer;
+
+font-weight:600;
+}
+
+.buy{background:#22c55e;color:white;}
+.del{background:#ef4444;color:white;}
+
+/* ================= BILL BOX ================= */
+#billBox{
+position:fixed;
+right:20px;
+bottom:20px;
+
+width:320px;
+
+background:var(--card);
+backdrop-filter:blur(18px);
+
+border:1px solid var(--stroke);
+border-radius:var(--radius);
+
+padding:16px;
+
+box-shadow:var(--shadow);
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:1024px){
+.kpi{grid-template-columns:1fr 1fr;}
+#grid{grid-template-columns:1fr 1fr;}
+.left{width:100%;}
+}
+
+@media(max-width:768px){
+.container{flex-direction:column;}
+
+#grid{grid-template-columns:1fr;}
+.kpi{grid-template-columns:1fr;}
+
+.nav-links{
+position:fixed;
+top:0;
+left:-300px;
+
+width:260px;
+height:100vh;
+
+flex-direction:column;
+
+background:#0b1220;
+
+padding:20px;
+
+transition:.3s;
+}
+
+.nav-links.show{left:0;}
+.close{display:block;}
+}
+
+@media(max-width:480px){
+.kpi{grid-template-columns:1fr;}
+}
+
+
+/* ================= PRINT ONLY BILL SUMMARY (CLEAN INVOICE STYLE) ================= */
+@media print {
+
+body *{
+visibility:hidden !important;
+}
+
+/* SHOW ONLY BILL BOX */
+#billBox, #billBox *{
+visibility:visible !important;
+}
+
+/* FULL PAGE CLEAN INVOICE */
+#billBox{
+position:absolute;
+top:0;
+left:0;
+
+width:100%;
+height:auto;
+
+padding:40px;
+
+background:white !important;
+color:black !important;
+
+border:none !important;
+box-shadow:none !important;
+backdrop-filter:none !important;
+
+border-radius:0 !important;
+}
+
+/* HIDE BUTTONS */
+#billBox button{
+display:none !important;
+}
+
+/* TITLE BEAUTIFUL INVOICE STYLE */
+#billBox h2{
+font-size:26px;
+font-weight:800;
+text-align:center;
+margin-bottom:25px;
+color:#111827 !important;
+}
+
+/* ITEMS CLEAN STYLE */
+#billItems{
+background:white !important;
+border:1px solid #ddd;
+padding:15px;
+border-radius:10px;
+max-height:none !important;
+overflow:visible !important;
+}
+
+/* BILL ROWS */
+#billBox p{
+font-size:14px;
+padding:6px 0;
+border-bottom:1px dashed #ddd;
+display:flex;
+justify-content:space-between;
+color:#111827 !important;
+}
+
+/* TOTAL HIGHLIGHT */
+#billBox p:last-child{
+font-size:18px;
+font-weight:800;
+border-top:2px solid black;
+margin-top:10px;
+padding-top:10px;
+}
+
+/* REMOVE SCROLL */
+#billItems::-webkit-scrollbar{
+display:none;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar">
+
+  <!-- LEFT: 3-DOT + LOGO -->
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="menu" onclick="openMenu()">
+      <i class="fa-solid fa-ellipsis-vertical"></i>
+    </div>
+    <a href="/dashboard" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0">
+      <svg width="36" height="36" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="42" height="42" rx="11" fill="#111827"/>
+        <rect x="8" y="26" width="6" height="10" rx="2" fill="#60a5fa"/>
+        <rect x="17" y="19" width="6" height="17" rx="2" fill="#60a5fa" opacity="0.8"/>
+        <rect x="26" y="12" width="6" height="24" rx="2" fill="#60a5fa" opacity="0.9"/>
+        <path d="M10 25 L19 18 L28 11 L32 7" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" fill="none" stroke-dasharray="2 2"/>
+        <circle cx="32" cy="7" r="2.5" fill="#93c5fd"/>
+      </svg>
+      <span style="font-size:1.15rem;font-weight:800;font-family:'Poppins',sans-serif;letter-spacing:-0.5px;white-space:nowrap"><span style="color:#3b82f6">Stock</span><span style="color:#93c5fd">Flow</span></span>
+    </a>
+  </div>
+
+  <!-- LINKS -->
+  <ul class="nav-links" id="navLinks">
+
+    <!-- CLOSE BUTTON -->
+    <div class="close" onclick="closeMenu()">
+      <i class="fa-solid fa-xmark"></i>
+    </div>
+
+    <li><a href="/dashboard"><i class="fa-solid fa-house"></i> Home</a></li>
+     <li>
+  <a href="/products">
+    <i class="fa-solid fa-warehouse"></i>
+    Inventory & Billing
+  </a>
+</li>
+    <li><a href="/customers"><i class="fa-solid fa-users"></i> Customers</a></li>
+    <li><a href="/reports"><i class="fa-solid fa-chart-line"></i> Reports</a></li>
+
+  </ul>
+
+  <!-- BELL — always visible, outside drawer -->
+  <a href="#" onclick="toggleAlarm(event)" id="bellBtn" style="
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:42px;height:42px;
+    border-radius:11px;
+    background:rgba(245,158,11,0.12);
+    border:1.5px solid rgba(245,158,11,0.3);
+    color:#f59e0b;
+    font-size:18px;
+    text-decoration:none;
+    flex-shrink:0;
+  ">
+    <i class="fa-solid fa-bell"></i>
+    <span id="bellBadge" style="
+      position:absolute;
+      top:-5px;right:-5px;
+      background:#ef4444;
+      color:white;
+      font-size:10px;
+      font-weight:700;
+      min-width:18px;height:18px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border:2px solid #070b14;
+      animation:bellPulse 1.5s infinite;
+      padding:0 3px;
+    ">!</span>
+  </a>
+
+</nav>
+
+<!-- ===== LOW STOCK ALARM PANEL ===== -->
+<div id="alarmPanel" style="display:none;position:fixed;top:70px;right:20px;width:300px;background:#111827;border:1px solid rgba(239,68,68,0.3);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.5);z-index:9999;overflow:hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(239,68,68,0.08);border-bottom:1px solid rgba(239,68,68,0.15)">
+    <div style="display:flex;align-items:center;gap:8px">
+      <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;font-size:14px"></i>
+      <span style="color:#ef4444;font-weight:700;font-size:13px">Low Stock Alert</span>
+    </div>
+    <button onclick="document.getElementById('alarmPanel').style.display='none'" style="background:none;border:none;color:#8a94a6;cursor:pointer;font-size:16px">✕</button>
+  </div>
+  <div id="alarmList" style="max-height:280px;overflow-y:auto;padding:8px"></div>
+  <div style="padding:12px 16px;border-top:1px solid rgba(255,255,255,0.06);text-align:center">
+    <a href="/products" style="color:#3b82f6;font-size:12px;text-decoration:none;font-weight:600">View All Products →</a>
+  </div>
+</div>
+
+<script>
+
+/* OPEN MENU */
+function openMenu(){
+document.getElementById("navLinks").classList.add("show");
+}
+
+/* CLOSE MENU */
+function closeMenu(){
+document.getElementById("navLinks").classList.remove("show");
+}
+
+/* CLICK OUTSIDE CLOSE */
+document.addEventListener("click", function(e){
+let menu = document.getElementById("navLinks");
+let btn = document.querySelector(".menu");
+
+if(!menu.contains(e.target) && !btn.contains(e.target)){
+menu.classList.remove("show");
+}
+});
+
+</script>
+<div class="container">
+
+<!-- LEFT FORM -->
+<div class="left">
+<h2>➕ Add Product</h2>
+
+<input type="text" id="name" placeholder="Product Name">
+<input type="number" id="price" placeholder="Price">
+<input type="number" id="qty" placeholder="Quantity">
+<input type="text" id="category" placeholder="Category">
+<input type="file" id="img">
+
+<button onclick="add()">Add Product</button>
+</div>
+
+<!-- RIGHT -->
+<div class="right">
+
+<!-- KPI -->
+<div class="kpi">
+  <div class="kpi-card">
+    📦 <h3>Orders</h3>
+    <span id="total">0</span>
+  </div>
+
+  <div class="kpi-card red">
+    ⚠ <h3>Low Stock</h3>
+    <span id="low">0</span>
+  </div>
+
+  <div class="kpi-card green">
+    💰 <h3>Revenue</h3>
+    <span id="rev">0</span>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<input id="search" onkeyup="search()" placeholder="🔍 Search products...">
+
+<!-- PRODUCT GRID -->
+<div id="grid"></div>
+
+<div id="alert"></div>
+
+</div>
+</div>
+<!-- bill summary  -->
+ <div id="billBox">
+<h2>🧾 Bill Summary</h2>
+<div id="billItems"></div>
+
+<div style="margin:10px 0;padding:10px 0;border-top:1px solid rgba(255,255,255,0.08)">
+  <label style="font-size:0.8rem;color:#8a94a6;display:block;margin-bottom:6px">🏷 Apply Discount</label>
+  <select id="discountSelect" onchange="updateBill()" style="width:100%;padding:8px 10px;background:#1f2937;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#e6edf7;font-size:0.85rem;outline:none">
+    <option value="0|none">No Discount</option>
+  </select>
+  <p id="discountApplied" style="font-size:0.8rem;color:#22c55e;margin-top:5px;display:none">✅ Discount applied!</p>
+</div>
+
+<p>Subtotal: <span id="totalBill">0</span></p>
+<p id="discountRow" style="display:none;color:#22c55e">Discount: <span id="discountAmt">0</span></p>
+<p>Tax (5%): <span id="tax">0</span></p>
+<p style="font-weight:700;color:#3b82f6">Grand Total: <span id="grand">0</span></p>
+
+<button onclick="printBill()">🖨 Print</button>
+<button onclick="saveOrder()">💾 Save Order</button>
+</div>
+<script>
+  let products = [];
+let cart = [];
+
+/* ================= LOAD ================= */
+function load() {
+    fetch("/api/products", { credentials: "include" })
+        .then(r => {
+            if (!r.ok) throw "Session expired / login missing";
+            return r.json();
+        })
+        .then(data => {
+            console.log("DATA:", data);
+
+            products = Array.isArray(data) ? data : [];
+            render(products);
+            loadKPI();
+        })
+        .catch(err => {
+            console.log("LOAD ERROR:", err);
+        });
+}
+function saveOrder() {
+
+    if (cart.length === 0) {
+        alert("Cart empty hai!");
+        return;
+    }
+
+    fetch("/api/save_order", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            items: cart,
+            total: parseFloat(document.getElementById("totalBill").innerText || 0),
+            tax: parseFloat(document.getElementById("tax").innerText || 0),
+            grand_total: parseFloat(document.getElementById("grand").innerText || 0)
+        }),
+        credentials: "include"
+    })
+    .then(r => r.json())
+    .then(res => {
+        alert(res.msg);   // 👈 backend message show
+        cart = [];
+        updateBill();
+    })
+    .catch(err => {
+        console.log(err);
+        alert("Order save failed!");
+    });
+}
+function printBill() {
+    window.print();
+}
+/* ================= RENDER ================= */
+function render(data) {
+
+    let html = "";
+
+    data.forEach(p => {
+
+        let img = p.image ? p.image : "https://via.placeholder.com/200";
+
+        html += `
+        <div class="card">
+            <img src="${img}">
+            <h3>${p.name}</h3>
+            <p>💰 PKR ${p.price.toLocaleString()}</p>
+            <p>📦 Qty: ${p.quantity}</p>
+
+            <div class="btns">
+                <button onclick="buy(${p.id})">🛒 Buy</button>
+                <button onclick="del(${p.id})">🗑 Delete</button>
+            </div>
+        </div>`;
+    });
+
+    document.getElementById("grid").innerHTML = html;
+}
+
+/* ================= KPI (SAFE) ================= */
+function loadKPI() {
+    fetch("/api/reports/kpi", { credentials: "include" })
+        .then(async r => {
+            let data = await r.json();
+            console.log("KPI:", data);
+            return data;
+        })
+        .then(kpi => {
+            document.getElementById("total").innerText = kpi.orders || 0; 
+            // document.getElementById("total").innerText = kpi.products || 0;
+            document.getElementById("low").innerText = kpi.low_stock || 0;
+            document.getElementById("rev").innerText = "PKR " + (kpi.revenue || 0).toLocaleString();
+        })
+        .catch(err => console.log("KPI ERROR:", err));
+}
+
+function updateBill() {
+    let html = "";
+    let total = 0;
+    cart.forEach(p => {
+        html += `<p>${p.name} <span>PKR ${p.price.toLocaleString()}</span></p>`;
+        total += p.price;
+    });
+
+    // Apply discount
+    let sel = document.getElementById("discountSelect");
+    let parts = sel ? sel.value.split("|") : ["0","none"];
+    let dVal = parseFloat(parts[0]) || 0;
+    let dType = parts[1] || "none";
+    let discountAmt = 0;
+    if(dType === "Percentage") discountAmt = total * (dVal/100);
+    else if(dType === "Flat") discountAmt = Math.min(dVal, total);
+
+    let afterDiscount = total - discountAmt;
+    let tax = afterDiscount * 0.05;
+    let grand = afterDiscount + tax;
+
+    document.getElementById("billItems").innerHTML = html;
+    document.getElementById("totalBill").innerText = "PKR " + total.toFixed(2);
+    document.getElementById("tax").innerText = "PKR " + tax.toFixed(2);
+    document.getElementById("grand").innerText = "PKR " + grand.toFixed(2);
+
+    let dRow = document.getElementById("discountRow");
+    let dAmt = document.getElementById("discountAmt");
+    if(discountAmt > 0){
+        dRow.style.display = "block";
+        dAmt.innerText = "- PKR " + discountAmt.toFixed(2);
+    } else {
+        dRow.style.display = "none";
+    }
+}
+
+async function loadDiscounts(){
+    try {
+        let res = await fetch("/api/discounts", {credentials:"include"});
+        let discounts = await res.json();
+        let sel = document.getElementById("discountSelect");
+        discounts.filter(d=>d.status==="Active").forEach(d=>{
+            let opt = document.createElement("option");
+            opt.value = d.value + "|" + d.type;
+            opt.textContent = d.name + " (" + (d.type==="Percentage" ? d.value+"%" : "PKR "+d.value) + " off)";
+            sel.appendChild(opt);
+        });
+    } catch(e){}
+}
+
+/* ================= ADD ================= */
+function add() {
+
+    let formData = new FormData();
+
+    formData.append("name", document.getElementById("name").value);
+    formData.append("price", document.getElementById("price").value);
+    formData.append("quantity", document.getElementById("qty").value);
+    formData.append("category", document.getElementById("category").value);
+
+    let img = document.getElementById("img");
+    if (img.files.length > 0) {
+        formData.append("image", img.files[0]);
+    }
+
+    fetch("/api/add", {
+        method: "POST",
+        body: formData,
+        credentials: "include"
+    })
+    .then(r => r.json())
+    .then(() => load())
+    .catch(err => console.log("ADD ERROR:", err));
+}
+
+/* ================= BUY ================= */
+function buy(id) {
+
+    let product = products.find(p => p.id === id);
+
+    if (!product) return;
+
+    cart.push({
+        id: product.id,
+        name: product.name,
+        price: product.price
+    });
+
+    updateBill();
+
+    fetch("/api/buy/" + id, {
+        method: "PUT",
+        credentials: "include"
+    })
+    .then(() => load());
+}
+
+/* ================= DELETE (SAFE FIX) ================= */
+function del(id) {
+
+    fetch("/api/delete/" + id, {
+        method: "DELETE",
+        credentials: "include"
+    })
+    .then(() => load())
+    .catch(err => {
+        console.log("DELETE API MISSING:", err);
+        alert("Delete API backend me add karo!");
+    });
+}
+
+/* ================= SEARCH ================= */
+function search() {
+
+    let val = document.getElementById("search").value.toLowerCase();
+
+    let filtered = products.filter(p =>
+        (p.name || "").toLowerCase().includes(val)
+    );
+
+    render(filtered);
+}
+
+/* ================= INIT ================= */
+load();
+loadAlarm();
+
+/* ================= LOW STOCK ALARM ================= */
+async function loadAlarm() {
+  try {
+    const res = await fetch("/api/products", {credentials:"include"});
+    const prods = await res.json();
+    const lowItems = prods.filter(p => p.quantity < 10);
+    const outItems = prods.filter(p => p.quantity === 0);
+
+    const badge = document.getElementById("bellBadge");
+    if (lowItems.length > 0) {
+      badge.textContent = lowItems.length;
+      badge.style.background = outItems.length > 0 ? "#ef4444" : "#f59e0b";
+    } else {
+      badge.style.background = "#22c55e";
+      badge.textContent = "✓";
+      badge.style.animation = "none";
+    }
+
+    const list = document.getElementById("alarmList");
+    if (lowItems.length === 0) {
+      list.innerHTML = `<div style="padding:20px;text-align:center;color:#22c55e;font-size:13px">✅ All products are well stocked!</div>`;
+    } else {
+      list.innerHTML = lowItems.map(p => {
+        const color = p.quantity === 0 ? "#ef4444" : "#f59e0b";
+        const label = p.quantity === 0 ? "OUT OF STOCK" : `Only ${p.quantity} left`;
+        return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:9px;margin-bottom:4px;background:rgba(255,255,255,0.03)">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0"></div>
+            <span style="color:#e6edf7;font-size:12px;font-weight:600">${p.name}</span>
+          </div>
+          <span style="color:${color};font-size:11px;font-weight:700">${label}</span>
+        </div>`;
+      }).join("");
+    }
+  } catch(e) { console.log("Alarm error:", e); }
+}
+
+function toggleAlarm(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const panel = document.getElementById("alarmPanel");
+  panel.style.display = panel.style.display === "none" ? "block" : "none";
+}
+
+document.addEventListener("click", function(e) {
+  const panel = document.getElementById("alarmPanel");
+  const bell = document.getElementById("bellBtn");
+  if (panel && bell && !panel.contains(e.target) && !bell.contains(e.target)) {
+    panel.style.display = "none";
+  }
+});
+</script>
+
+<style>
+@keyframes bellPulse {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+</style>
+
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact & Support — StockFlow</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+:root{
+  --bg:#0d1117; --panel:#111827; --panel-light:#1f2937;
+  --primary:#3b82f6; --secondary:#6366f1; --green:#22c55e; --red:#ef4444;
+  --text:#e6edf7; --muted:#8a94a6; --stroke:rgba(255,255,255,0.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh}
+
+/* NAVBAR */
+.navbar{display:flex;justify-content:space-between;align-items:center;padding: 0 28px;height: 64px;background:rgba(15,22,41,0.95);border-bottom:1px solid var(--stroke);position:sticky;top:0;z-index:100}
+.logo a{color:var(--primary);font-weight:800;font-size:1.2rem;text-decoration:none}
+.nav-links{display:flex;gap:8px;list-style:none}
+.nav-links a{color:var(--muted);text-decoration:none;padding:7px 14px;border-radius:8px;font-size:.9rem;transition:.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--primary);background:rgba(0,212,255,.08)}
+
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:36px 24px}
+.page-header{margin-bottom:36px}
+.page-header h1{font-size:1.8rem;font-weight:800}
+.page-header h1 span{color:var(--primary)}
+.page-header p{color:var(--muted);margin-top:6px}
+
+/* GRID LAYOUT */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:36px}
+@media(max-width:768px){.contact-grid{grid-template-columns:1fr}}
+
+/* FORM */
+.form-card{background:var(--panel);border:1px solid var(--stroke);border-radius:16px;padding:30px}
+.form-card h3{font-size:1.05rem;font-weight:700;margin-bottom:22px;display:flex;align-items:center;gap:10px}
+.form-card h3 i{color:var(--primary)}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.form-group label{font-size:.82rem;color:var(--muted);font-weight:500}
+.form-group input,.form-group select,.form-group textarea{padding:11px 14px;background:var(--panel-light);border:1px solid var(--stroke);border-radius:10px;color:var(--text);font-size:.9rem;outline:none;font-family:inherit;transition:.2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--primary)}
+.form-group select option{background:var(--panel)}
+.form-group textarea{resize:vertical;min-height:120px}
+.btn-send{width:100%;padding:13px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;font-weight:700;font-size:1rem;border:none;cursor:pointer;letter-spacing:.3px;margin-top:4px}
+.success-msg{display:none;padding:13px 16px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);border-radius:10px;color:var(--green);font-size:.9rem;text-align:center;margin-top:12px}
+
+/* INFO CARDS */
+.info-col{display:flex;flex-direction:column;gap:16px}
+.info-card{background:var(--panel);border:1px solid var(--stroke);border-radius:14px;padding:22px 24px;display:flex;gap:16px;align-items:flex-start}
+.info-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.info-icon.blue{background:rgba(0,212,255,.12);color:var(--primary)}
+.info-icon.purple{background:rgba(124,77,255,.12);color:var(--secondary)}
+.info-icon.green{background:rgba(34,197,94,.12);color:var(--green)}
+.info-icon.yellow{background:rgba(245,158,11,.12);color:#f59e0b}
+.info-text h4{font-size:.95rem;font-weight:700;margin-bottom:4px}
+.info-text p{font-size:.85rem;color:var(--muted);line-height:1.5}
+
+/* MESSAGES TABLE */
+.table-wrap{background:var(--panel);border:1px solid var(--stroke);border-radius:16px;overflow:hidden}
+.table-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--stroke)}
+.table-header h3{font-size:1rem;font-weight:700}
+table{width:100%;border-collapse:collapse}
+thead th{padding:12px 18px;text-align:left;font-size:.77rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);background:var(--panel-light);border-bottom:1px solid var(--stroke)}
+tbody tr{border-bottom:1px solid var(--stroke);transition:.15s}
+tbody tr:hover{background:rgba(255,255,255,.025)}
+td{padding:14px 18px;font-size:.88rem}
+.badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:.73rem;font-weight:600}
+.badge.unread{background:rgba(0,212,255,.12);color:var(--primary)}
+.badge.read{background:rgba(255,255,255,.06);color:var(--muted)}
+.empty-state{padding:50px;text-align:center;color:var(--muted)}
+.empty-state i{font-size:2.5rem;margin-bottom:14px;opacity:.35}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
+    <div class="menu" onclick="openMenu ? openMenu() : null" style="width:46px;height:46px;display:flex;justify-content:center;align-items:center;border-radius:14px;cursor:pointer;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);color:#fff">
+      <i class="fa-solid fa-ellipsis-vertical"></i>
+    </div>
+    <a href="/dashboard" style="display:flex;align-items:center;gap:10px;text-decoration:none">
+      <svg width="36" height="36" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="42" height="42" rx="11" fill="#111827"/>
+        <rect x="8" y="26" width="6" height="10" rx="2" fill="#60a5fa"/>
+        <rect x="17" y="19" width="6" height="17" rx="2" fill="#60a5fa" opacity="0.8"/>
+        <rect x="26" y="12" width="6" height="24" rx="2" fill="#60a5fa" opacity="0.9"/>
+        <path d="M10 25 L19 18 L28 11 L32 7" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" fill="none" stroke-dasharray="2 2"/>
+        <circle cx="32" cy="7" r="2.5" fill="#93c5fd"/>
+      </svg>
+      <span style="font-size:1.15rem;font-weight:800;font-family:'Poppins',sans-serif;letter-spacing:-0.5px"><span style="color:#3b82f6">Stock</span><span style="color:#93c5fd">Flow</span></span>
+    </a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="/dashboard"><i class="fa-solid fa-house"></i> Home</a></li>
+    <li><a href="/products"><i class="fa-solid fa-warehouse"></i> Inventory</a></li>
+    <li><a href="/customers"><i class="fa-solid fa-users"></i> Customers</a></li>
+    <li><a href="/reports"><i class="fa-solid fa-chart-line"></i> Analysis</a></li>
+    <li><a href="/discount"><i class="fa-solid fa-tag"></i> Discounts</a></li>
+    
+  </ul>
+</nav>
+
+<div class="main">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <h1><span>Contact</span> & Support</h1>
+    <p>Send us a message or find our contact information below.</p>
+  </div>
+
+  <div class="contact-grid">
+
+    <!-- FORM -->
+    <div class="form-card">
+      <h3><i class="fa-solid fa-paper-plane"></i> Send a Message</h3>
+
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" id="cName" placeholder="Full name">
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="cEmail" placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label>Subject</label>
+        <select id="cSubject">
+          <option value="">Select subject</option>
+          <option>Technical Support</option>
+          <option>Billing Issue</option>
+          <option>Feature Request</option>
+          <option>Account Problem</option>
+          <option>General Inquiry</option>
+          <option>Bug Report</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea id="cMessage" placeholder="Describe your issue or question in detail..."></textarea>
+      </div>
+
+      <button class="btn-send" onclick="sendMessage()">
+        <i class="fa-solid fa-paper-plane" style="margin-right:8px"></i>Send Message
+      </button>
+      <div class="success-msg" id="successMsg">
+        ✅ Message sent successfully! We'll reply within 24 hours.
+      </div>
+    </div>
+
+    <!-- INFO CARDS -->
+    <div class="info-col">
+      <div class="info-card">
+        <div class="info-icon blue"><i class="fa-solid fa-phone"></i></div>
+        <div class="info-text">
+          <h4>Phone Support</h4>
+          <p>+92 300 1234567<br>Monday–Saturday, 9am–6pm PKT</p>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon purple"><i class="fa-solid fa-envelope"></i></div>
+        <div class="info-text">
+          <h4>Email Us</h4>
+          <p>support@ultrabilling.pk<br>We reply within 24 hours</p>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon green"><i class="fa-brands fa-whatsapp"></i></div>
+        <div class="info-text">
+          <h4>WhatsApp</h4>
+          <p>+92 321 9876543<br>Quick help via WhatsApp chat</p>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon yellow"><i class="fa-solid fa-location-dot"></i></div>
+        <div class="info-text">
+          <h4>Office Address</h4>
+          <p>Office 12, Tech Tower, Main Boulevard<br>Lahore, Punjab, Pakistan</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MESSAGES INBOX -->
+  <div class="table-wrap">
+    <div class="table-header">
+      <h3><i class="fa-solid fa-inbox" style="color:var(--primary);margin-right:8px"></i>My Submitted Messages</h3>
+      <button onclick="loadMessages()" style="padding:7px 14px;border-radius:8px;background:var(--panel-light);color:var(--muted);border:1px solid var(--stroke);cursor:pointer;font-size:.83rem">
+        <i class="fa-solid fa-rotate-right"></i> Refresh
+      </button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Subject</th>
+          <th>Message</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="msgTable">
+        <tr><td colspan="7"><div class="empty-state"><i class="fa-solid fa-inbox"></i><br>No messages yet.</div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+async function sendMessage() {
+  let name = document.getElementById("cName").value.trim();
+  let email = document.getElementById("cEmail").value.trim();
+  let subject = document.getElementById("cSubject").value;
+  let message = document.getElementById("cMessage").value.trim();
+  if (!name || !email || !subject || !message) {
+    alert("Please fill all fields."); return;
+  }
+  let res = await fetch("/api/contact", {
+    method: "POST", credentials: "include",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({name, email, subject, message})
+  });
+  let data = await res.json();
+  if (res.ok) {
+    document.getElementById("successMsg").style.display = "block";
+    document.getElementById("cName").value = "";
+    document.getElementById("cEmail").value = "";
+    document.getElementById("cSubject").value = "";
+    document.getElementById("cMessage").value = "";
+    setTimeout(() => document.getElementById("successMsg").style.display = "none", 4000);
+    loadMessages();
+  }
+}
+
+async function loadMessages() {
+  let res = await fetch("/api/contact/messages", {credentials:"include"});
+  let msgs = await res.json();
+  let tbody = document.getElementById("msgTable");
+  if (!msgs.length) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fa-solid fa-inbox"></i><br>No messages yet.</div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = msgs.map((m,i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td><strong>${m.name}</strong></td>
+      <td style="color:var(--muted)">${m.email}</td>
+      <td>${m.subject}</td>
+      <td style="color:var(--muted);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${m.message}</td>
+      <td><span class="badge ${m.status==='Unread'?'unread':'read'}">${m.status}</span></td>
+      <td style="color:var(--muted);font-size:.8rem">${m.created_at.substring(0,10)}</td>
+    </tr>
+  `).join("");
+}
+
+loadMessages();
+</script>
+</body>
+</html>

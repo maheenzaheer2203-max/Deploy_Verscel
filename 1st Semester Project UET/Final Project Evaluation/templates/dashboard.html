@@ -1,0 +1,2356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StockFlow — Dashboard</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+/* ================= GOOGLE FONT ================= */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@600;700;800&display=swap');
+
+/* ================= ROOT - ADVANCED COLOR SYSTEM ================= */
+:root {
+  /* Primary Colors */
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+  --primary-light: #60a5fa;
+  
+  /* Secondary Colors */
+  --secondary: #6366f1;
+  --secondary-dark: #6a3fd9;
+  --secondary-light: #9575ff;
+  
+  /* Backgrounds */
+  --bg: #0d1117;
+  --bg-alt: #090d14;
+  --panel: #111827;
+  --panel-light: #1f2937;
+  
+  /* Text Colors */
+  --text: #e6edf7;
+  --text-secondary: #b4bcc8;
+  --text-muted: #8a94a6;
+  
+  /* Borders & Effects */
+  --stroke: rgba(255, 255, 255, 0.08);
+  --stroke-light: rgba(255, 255, 255, 0.12);
+  --stroke-hover: rgba(0, 212, 255, 0.3);
+  
+  /* Shadows & Glows */
+  --glow-primary: 0 2px 8px rgba(0,0,0,0.3);
+  --glow-secondary: 0 2px 8px rgba(0,0,0,0.2);
+  --shadow-sm: 0 5px 15px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.4);
+  
+  /* Transitions */
+  --transition-fast: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ================= RESET & GLOBAL STYLES ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+  font-size: 16px;
+}
+
+/* Remove scrollbar but keep functionality */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary);
+}
+
+/* ================= NAVBAR - PREMIUM VERSION ================= */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  padding: 0 28px;
+  height: 64px;
+  
+  background: rgba(10, 14, 39, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  
+  border-bottom: 1px solid var(--stroke-light);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  
+  transition: all var(--transition-normal);
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ================= LOGO ================= */
+.logo a {
+  font-size: 22px;
+  font-weight: 900;
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif;
+  
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  position: relative;
+  transition: transform var(--transition-fast);
+  letter-spacing: -0.5px;
+}
+
+.logo a:hover {
+  transform: scale(1.05);
+}
+
+.logo a::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  opacity: 0;
+  border-radius: 12px;
+  z-index: -1;
+  transition: opacity var(--transition-normal);
+  filter: blur(20px);
+}
+
+.logo a:hover::before {
+  opacity: 0.1;
+}
+
+/* ================= MENU BUTTON ================= */
+.menu {
+  width: 44px;
+  height: 44px;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  border-radius: 14px;
+  cursor: pointer;
+  
+  background: linear-gradient(135deg, 
+    rgba(0, 212, 255, 0.1), 
+    rgba(124, 77, 255, 0.05));
+  border: 1.5px solid var(--stroke-light);
+  
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 700;
+  
+  transition: all var(--transition-fast);
+  box-shadow: inset 0 2px 8px rgba(0, 212, 255, 0.1);
+}
+
+.menu:hover {
+  transform: rotate(90deg) scale(1.08);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  border-color: var(--primary);
+  background: linear-gradient(135deg, 
+    rgba(0, 212, 255, 0.15), 
+    rgba(124, 77, 255, 0.1));
+}
+
+/* ================= NAV LINKS ================= */
+.nav-links {
+  display: flex;
+  gap: 2px;
+  list-style: none;
+  align-items: center;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: var(--text-muted);
+  
+  padding: 8px 12px;
+  border-radius: 10px;
+  
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  
+  font-size: 13px;
+  font-weight: 500;
+  
+  transition: all var(--transition-fast);
+  position: relative;
+  white-space: nowrap;
+}
+
+.nav-links li a::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  
+  background: linear-gradient(135deg,
+    rgba(0, 212, 255, 0.15),
+    rgba(124, 77, 255, 0.15));
+  
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  border-radius: 12px;
+  z-index: -1;
+}
+
+.nav-links li a:hover {
+  color: var(--text);
+  transform: translateY(-2px);
+}
+
+.nav-links li a:hover::before {
+  opacity: 1;
+}
+
+/* ================= CLOSE BUTTON ================= */
+.close {
+  display: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 700;
+  margin-bottom: 20px;
+  align-self: flex-end;
+  transition: all var(--transition-fast);
+  padding: 8px;
+}
+
+.close:hover {
+  color: #ff4d6d;
+  transform: rotate(90deg) scale(1.1);
+}
+
+/* ================= OVERLAY ================= */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-normal);
+  z-index: 998;
+}
+
+.nav-links.show ~ .overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ================= MOBILE RESPONSIVE NAVBAR ================= */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 28px;
+  }
+
+  .menu {
+    display: flex !important;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 0;
+    left: -290px;
+    width: 280px;
+    height: 100vh;
+    
+    flex-direction: column;
+    gap: 4px;
+    
+    padding: 20px;
+    
+    background: rgba(10, 14, 39, 0.98);
+    backdrop-filter: blur(25px);
+    
+    border-right: 1px solid var(--stroke-light);
+    transition: left var(--transition-normal);
+    box-shadow: 10px 0 50px rgba(0, 0, 0, 0.5);
+    
+    z-index: 999;
+    overflow-y: auto;
+  }
+
+  .nav-links.show {
+    left: 0;
+  }
+
+  .nav-links li a {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 15px;
+  }
+
+  .close {
+    display: flex;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo a {
+    font-size: 20px;
+  }
+
+  .navbar {
+    padding: 0 28px;
+  }
+}
+
+/* ================= HERO SECTION ================= */
+.hero {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0d1117 0%, #090d14 50%, #111827 100%);
+  padding: 60px 20px;
+}
+
+/* Enhanced Background Elements */
+.hero::before,
+.hero::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: 0;
+  opacity: 0.5;
+  animation: float 8s ease-in-out infinite;
+}
+
+.hero::before {
+  width: 400px;
+  height: 400px;
+  top: 10%;
+  left: 5%;
+  background: radial-gradient(circle, rgba(59,130,246,0.06), transparent);
+}
+
+.hero::after {
+  width: 350px;
+  height: 350px;
+  bottom: 10%;
+  right: 5%;
+  background: radial-gradient(circle, rgba(99,102,241,0.05), transparent);
+  animation-delay: 1s;
+}
+
+/* ================= SLIDES ================= */
+.slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transform: scale(1.1);
+  transition: all 1.5s ease-in-out;
+  z-index: 1;
+  filter: brightness(0.5) contrast(1.15) saturate(1.1);
+}
+
+.slide.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ================= HERO OVERLAY ================= */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(59,130,246,0.05), transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(99,102,241,0.04), transparent 50%),
+    linear-gradient(180deg, 
+      rgba(10, 14, 39, 0.8), 
+      rgba(10, 14, 39, 0.6),
+      rgba(5, 8, 20, 0.85));
+  z-index: 2;
+  backdrop-filter: blur(2px);
+}
+
+/* ================= HERO CONTENT ================= */
+.content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  max-width: 1000px;
+  padding: 20px;
+  animation: fadeInUp 1s ease 0.2s both;
+}
+
+.content h1 {
+  font-size: clamp(2.5rem, 8vw, 3.8rem);
+  font-weight: 900;
+  line-height: 1.15;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: -1px;
+  
+  background: linear-gradient(135deg, var(--primary), var(--secondary), var(--primary));
+  background-size: 100% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  animation: gradientShift 8s ease infinite;
+  text-shadow: 0 0 60px rgba(0, 212, 255, 0.1);
+}
+
+.content p {
+  margin-top: 20px;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  color: var(--text-secondary);
+  opacity: 0.95;
+  line-height: 1.7;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: 400;
+}
+
+/* ================= BUTTONS ================= */
+.buttons {
+  margin-top: 45px;
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeInUp 1s ease 0.4s both;
+}
+
+.btn {
+  padding: 16px 36px;
+  border-radius: 60px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all var(--transition-normal);
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s;
+}
+
+.btn:hover::before {
+  transform: translateX(100%);
+}
+
+/* Primary Button */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.btn-primary:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  border: 1.5px solid var(--stroke-light);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  transition: all var(--transition-normal);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-4px);
+  background: rgba(0, 212, 255, 0.12);
+  border-color: var(--primary);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  color: var(--text);
+}
+
+.btn-secondary:active {
+  transform: translateY(-2px);
+}
+
+/* ================= CAROUSEL ================= */
+.carousel {
+  margin-top: 80px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  z-index: 3;
+  padding: 20px 0;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 24px;
+  animation: scroll 25s linear infinite;
+  width: max-content;
+}
+
+.carousel-track:hover {
+  animation-play-state: paused;
+}
+
+.carousel-card {
+  min-width: 340px;
+  max-width: 340px;
+  
+  background: linear-gradient(135deg, 
+    rgba(0, 212, 255, 0.08),
+    rgba(124, 77, 255, 0.08));
+  border: 1.5px solid var(--stroke-light);
+  border-radius: 24px;
+  padding: 20px;
+  
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  
+  transition: all var(--transition-normal);
+  color: var(--text);
+  
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+    rgba(0, 212, 255, 0.1),
+    transparent);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  pointer-events: none;
+}
+
+.carousel-card:hover {
+  transform: translateY(-15px) scale(1.05);
+  border-color: var(--primary);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.carousel-card:hover::before {
+  opacity: 1;
+}
+
+.carousel-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  display: block;
+  transition: transform var(--transition-normal);
+}
+
+.carousel-card:hover img {
+  transform: scale(1.08);
+}
+
+.carousel-card h3 {
+  font-size: 17px;
+  margin-bottom: 8px;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.carousel-card p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ================= FEATURES SECTION ================= */
+.features {
+  padding: clamp(60px, 10vw, 100px) 20px;
+  background: linear-gradient(180deg, #0d1117, #090d14);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.features::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--primary), 
+    transparent);
+}
+
+.section-title {
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  margin-bottom: 60px;
+  color: var(--text);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.card {
+  background: linear-gradient(135deg,
+    rgba(0, 212, 255, 0.05),
+    rgba(124, 77, 255, 0.05));
+  border: 1.5px solid var(--stroke-light);
+  padding: 40px 30px;
+  border-radius: 24px;
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+  group: hover;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+    rgba(0, 212, 255, 0.1),
+    rgba(124, 77, 255, 0.1));
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  z-index: -1;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  top: 0;
+  left: -100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--primary), 
+    var(--secondary), 
+    transparent);
+  transition: left var(--transition-smooth);
+}
+
+.card:hover {
+  transform: translateY(-12px) scale(1.02);
+  border-color: var(--primary);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card:hover::after {
+  left: 100%;
+}
+
+.card i {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: var(--primary);
+  transition: all var(--transition-normal);
+  display: inline-block;
+}
+
+.card:hover i {
+  color: var(--secondary);
+  transform: scale(1.25) rotate(8deg);
+}
+
+.card h3 {
+  color: var(--text);
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.card p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+/* ================= REVIEWS SECTION ================= */
+.reviews {
+  padding: clamp(60px, 10vw, 100px) 20px;
+  background: linear-gradient(180deg, #090d14, #0d1117);
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.reviews::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--secondary), 
+    transparent);
+}
+
+.review-title {
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  margin-bottom: 60px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.review-wrapper {
+  max-width: 1300px;
+  margin: auto;
+  overflow: hidden;
+}
+
+.review-track {
+  display: flex;
+  gap: 28px;
+  animation: scroll 20s linear infinite;
+}
+
+.review-track:hover {
+  animation-play-state: paused;
+}
+
+.review-card {
+  min-width: 320px;
+  background: linear-gradient(135deg,
+    rgba(0, 212, 255, 0.08),
+    rgba(124, 77, 255, 0.08));
+  border: 1.5px solid var(--stroke-light);
+  border-radius: 20px;
+  padding: 35px 30px;
+  text-align: center;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.review-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--primary),
+    var(--secondary),
+    transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition-normal);
+}
+
+.review-card:hover {
+  transform: translateY(-15px) scale(1.03);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  border-color: var(--primary);
+}
+
+.review-card:hover::before {
+  transform: scaleX(1);
+}
+
+.review-card img {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  margin-bottom: 18px;
+  border: 3px solid var(--primary);
+  object-fit: cover;
+  transition: all var(--transition-normal);
+}
+
+.review-card:hover img {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.review-card h3 {
+  color: var(--text);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.review-card span {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 5px;
+}
+
+.review-card p {
+  margin-top: 18px;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.stars {
+  margin-top: 15px;
+  color: #ffd700;
+  font-size: 1.2rem;
+  letter-spacing: 3px;
+}
+
+/* ================= PRICING SECTION ================= */
+.pricing {
+  padding: clamp(60px, 10vw, 100px) 20px;
+  background: linear-gradient(180deg, #0d1117, #090d14);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--primary), 
+    transparent);
+}
+
+.pricing-title {
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  margin-bottom: 40px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 60px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.switch {
+  position: relative;
+  width: 56px;
+  height: 30px;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid var(--stroke-light);
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  backdrop-filter: blur(10px);
+}
+
+.slider::before {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 3px;
+  transition: all var(--transition-normal);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+input:checked + .slider {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-color: var(--primary);
+}
+
+input:checked + .slider::before {
+  transform: translateX(26px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.price-card {
+  background: linear-gradient(135deg,
+    rgba(0, 212, 255, 0.05),
+    rgba(124, 77, 255, 0.05));
+  border: 1.5px solid var(--stroke-light);
+  padding: 45px 35px;
+  border-radius: 24px;
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.price-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+    rgba(0, 212, 255, 0.1),
+    transparent);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  z-index: -1;
+}
+
+.popular {
+  transform: scale(1.05);
+  border: 1.5px solid var(--primary);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.badge {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: white;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.price-card:hover {
+  transform: translateY(-12px);
+  border-color: var(--primary);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.popular:hover {
+  transform: scale(1.05) translateY(-12px);
+}
+
+.price-card:hover::before {
+  opacity: 1;
+}
+
+.price-card h3 {
+  color: var(--text);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.price {
+  font-size: 3rem;
+  margin: 20px 0 10px;
+  color: var(--primary);
+  font-weight: 900;
+  font-family: 'Poppins', sans-serif;
+}
+
+.price-card > p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.price-card ul {
+  list-style: none;
+  margin: 30px 0;
+  text-align: left;
+}
+
+.price-card ul li {
+  margin: 14px 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.price-card ul li::before {
+  content: '✓';
+  color: var(--primary);
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+
+.price-card button {
+  padding: 14px 32px;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-weight: 700;
+  width: 100%;
+  font-size: 14px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.price-card button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s;
+}
+
+.price-card button:hover::before {
+  transform: translateX(100%);
+}
+
+.price-card button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.price-card button:active {
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .popular {
+    transform: none;
+  }
+
+  .popular:hover {
+    transform: translateY(-12px);
+  }
+}
+
+/* ================= FOOTER ================= */
+.footer {
+  background: linear-gradient(180deg, #090d14, #0d1117);
+  padding: 80px 20px 30px;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--stroke-light);
+  position: relative;
+  overflow: hidden;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--primary), 
+    transparent);
+}
+
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 50px;
+  max-width: 1300px;
+  margin: auto;
+  margin-bottom: 40px;
+}
+
+.footer .logo a {
+  font-size: 20px;
+}
+
+.footer-col h3 {
+  color: var(--text);
+  margin-bottom: 20px;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.footer-col p {
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+.footer-col ul {
+  list-style: none;
+}
+
+.footer-col ul li {
+  margin: 12px 0;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--text-muted);
+}
+
+.footer-col ul li:hover {
+  color: var(--primary);
+  transform: translateX(6px);
+}
+
+.socials {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+}
+
+.socials i {
+  padding: 10px;
+  border-radius: 50%;
+  background: rgba(0, 212, 255, 0.1);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  color: var(--primary);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.socials i:hover {
+  background: var(--primary);
+  color: var(--bg);
+  transform: translateY(-5px) scale(1.1);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.newsletter {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.newsletter input {
+  flex: 1;
+  padding: 12px 18px;
+  border: 1.5px solid var(--stroke-light);
+  outline: none;
+  border-radius: 30px 0 0 30px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  transition: all var(--transition-fast);
+  backdrop-filter: blur(10px);
+}
+
+.newsletter input:focus {
+  background: rgba(0, 212, 255, 0.08);
+  border-color: var(--primary);
+}
+
+.newsletter input::placeholder {
+  color: var(--text-muted);
+}
+
+.newsletter button {
+  padding: 12px 20px;
+  border: none;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  border-radius: 0 30px 30px 0;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all var(--transition-normal);
+  white-space: nowrap;
+}
+
+.newsletter button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 25px;
+  border-top: 1px solid var(--stroke-light);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 60px 20px 20px;
+  }
+
+  .footer-container {
+    gap: 30px;
+  }
+
+  .newsletter {
+    flex-direction: column;
+  }
+
+  .newsletter input,
+  .newsletter button {
+    border-radius: 30px;
+    width: 100%;
+  }
+}
+
+/* ================= LOGOUT MODAL ================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-normal);
+  z-index: 9999;
+}
+
+.modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-box {
+  background: linear-gradient(135deg,
+    rgba(15, 22, 41, 0.95),
+    rgba(10, 14, 39, 0.95));
+  border: 1.5px solid var(--stroke-light);
+  
+  padding: 40px;
+  border-radius: 24px;
+  
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+  
+  position: relative;
+  
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+  animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+
+.modal-box h2 {
+  color: var(--text);
+  margin-bottom: 12px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+}
+
+.modal-box p {
+  color: var(--text-muted);
+  margin-bottom: 28px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btn-cancel {
+  padding: 12px 24px;
+  border: 1.5px solid var(--stroke-light);
+  border-radius: 12px;
+  cursor: pointer;
+  
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  font-weight: 600;
+  transition: all var(--transition-normal);
+  flex: 1;
+  backdrop-filter: blur(10px);
+}
+
+.btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--stroke-hover);
+  transform: translateY(-2px);
+}
+
+.btn-logout {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  
+  background: linear-gradient(135deg, #ff4d6d, #ff0066);
+  color: white;
+  font-weight: 600;
+  transition: all var(--transition-normal);
+  flex: 1;
+}
+
+.btn-logout:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(255, 77, 109, 0.3);
+}
+
+.btn-logout:active {
+  transform: translateY(0);
+}
+
+/* ================= ANIMATIONS ================= */
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(20px); }
+}
+
+/* ================= RESPONSIVE TYPOGRAPHY ================= */
+@media (max-width: 1024px) {
+  .carousel-card {
+    min-width: 300px;
+    max-width: 300px;
+  }
+  
+  .review-card {
+    min-width: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content h1 {
+    font-size: 2rem;
+  }
+
+  .content p {
+    font-size: 0.95rem;
+  }
+
+  .buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 14px 24px;
+  }
+
+  .carousel-track {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .carousel-card {
+    min-width: 85%;
+    max-width: 85%;
+  }
+
+  .review-track {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .review-card {
+    min-width: 85%;
+  }
+
+  .modal-box {
+    margin: 20px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .content h1 {
+    font-size: 1.5rem;
+  }
+
+  .content p {
+    font-size: 0.9rem;
+  }
+
+  .btn {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+
+  .carousel-card {
+    min-width: 90%;
+    max-width: 90%;
+  }
+
+  .review-card {
+    min-width: 90%;
+    padding: 25px 20px;
+  }
+
+  .price-card {
+    padding: 30px 20px;
+  }
+
+  .footer-container {
+    gap: 25px;
+  }
+}
+
+/* ================= ACCESSIBILITY ================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color-scheme: dark;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar">
+
+  <!-- LEFT: 3-DOT + LOGO together -->
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="menu" onclick="openSettings()">
+      <i class="fa-solid fa-ellipsis-vertical"></i>
+    </div>
+    <a href="/dashboard" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0">
+      <svg width="36" height="36" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="42" height="42" rx="11" fill="#111827"/>
+        <rect x="8" y="26" width="6" height="10" rx="2" fill="#60a5fa"/>
+        <rect x="17" y="19" width="6" height="17" rx="2" fill="#60a5fa" opacity="0.8"/>
+        <rect x="26" y="12" width="6" height="24" rx="2" fill="#60a5fa" opacity="0.9"/>
+        <path d="M10 25 L19 18 L28 11 L32 7" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" fill="none" stroke-dasharray="2 2"/>
+        <circle cx="32" cy="7" r="2.5" fill="#93c5fd"/>
+      </svg>
+      <span style="font-size:1.15rem;font-weight:800;font-family:'Poppins',sans-serif;letter-spacing:-0.5px;white-space:nowrap"><span style="color:#3b82f6">Stock</span><span style="color:#93c5fd">Flow</span></span>
+    </a>
+  </div>
+
+  <!-- RIGHT: NAV LINKS -->
+  <ul class="nav-links" id="navLinks">
+    <div class="close" onclick="closeMenu()">
+      <i class="fa-solid fa-xmark"></i>
+    </div>
+    <li><a href="/dashboard"><i class="fa-solid fa-house"></i> Home</a></li>
+    <li><a href="/products"><i class="fa-solid fa-warehouse"></i> Inventory & Billing</a></li>
+    <li><a href="/customers"><i class="fa-solid fa-users"></i> Customers</a></li>
+    <li><a href="/reports"><i class="fa-solid fa-chart-line"></i> Analysis</a></li>
+    <li><a href="/discount"><i class="fa-solid fa-tag"></i> Discounts</a></li>
+    <li><a href="#" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+  </ul>
+
+</nav>
+
+<script>
+
+/* OPEN MENU */
+function openMenu(){
+document.getElementById("navLinks").classList.add("show");
+}
+
+/* CLOSE MENU */
+function closeMenu(){
+document.getElementById("navLinks").classList.remove("show");
+}
+
+/* CLICK OUTSIDE CLOSE */
+document.addEventListener("click", function(e){
+let menu = document.getElementById("navLinks");
+let btn = document.querySelector(".menu");
+
+if(!menu.contains(e.target) && !btn.contains(e.target)){
+menu.classList.remove("show");
+}
+});
+
+</script>
+
+<section class="hero">
+
+    <!-- SLIDES -->
+    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1600&q=80')"></div>
+
+<div class="slide" style="background-image:url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=80')"></div>
+
+<div class="slide" style="background-image:url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1600&q=80')"></div>
+
+    <!-- OVERLAY -->
+    <div class="overlay"></div>
+
+    <!-- GLOW EFFECT
+    <div class="glow"></div>
+    <div class="glow"></div> -->
+
+    <!-- CONTENT -->
+    <div class="content">
+        <h1>Control Your Entire SaaS Empire from One Dashboard</h1>
+        <p>Analytics, billing, users, automation — everything unified.</p>
+
+        <div class="buttons">
+            <button class="btn btn-primary" onclick="openTrialModal()" style="display:inline-flex;align-items:center;gap:10px">
+              <i class="fa-solid fa-rocket"></i>
+              Start Free Trial
+              <span style="background:rgba(255,255,255,0.2);font-size:11px;padding:3px 9px;border-radius:10px;font-weight:600">7 Days Free</span>
+            </button>
+            <button class="btn btn-secondary" onclick="scrollToFeatures()" style="display:inline-flex;align-items:center;gap:10px">
+              <span style="width:28px;height:28px;border-radius:50%;background:rgba(0,212,255,0.15);display:inline-flex;align-items:center;justify-content:center;color:#3b82f6"><i class="fa-solid fa-play" style="font-size:10px"></i></span>
+              See How It Works
+            </button>
+        </div>
+    </div>
+
+</section>
+
+<script>
+let slides = document.querySelectorAll(".slide");
+let index = 0;
+
+function changeSlide(){
+    slides[index].classList.remove("active");
+    index = (index + 1) % slides.length;
+    slides[index].classList.add("active");
+}
+
+setInterval(changeSlide, 4000);
+</script>
+<section class="features" id="features-section">
+
+    <h2 class="section-title">Powerful Features for Modern SaaS</h2>
+
+    <div class="feature-grid">
+
+        <div class="card">
+            <i class="fa-solid fa-chart-line"></i>
+            <h3>Advanced Analytics</h3>
+            <p>Track performance with real-time data and smart insights.</p>
+        </div>
+
+        <div class="card">
+            <i class="fa-solid fa-users"></i>
+            <h3>User Management</h3>
+            <p>Control users, roles, and permissions with ease.</p>
+        </div>
+
+        <div class="card">
+            <i class="fa-solid fa-credit-card"></i>
+            <h3>Billing System</h3>
+            <p>Handle subscriptions, invoices, and payments smoothly.</p>
+        </div>
+
+        <div class="card">
+            <i class="fa-solid fa-shield-halved"></i>
+            <h3>Secure Platform</h3>
+            <p>Enterprise-grade security for your SaaS business.</p>
+        </div>
+
+        <div class="card">
+            <i class="fa-solid fa-plug"></i>
+            <h3>API Integrations</h3>
+            <p>Connect with tools like Stripe, Slack, and more.</p>
+        </div>
+
+        <div class="card">
+            <i class="fa-solid fa-rocket"></i>
+            <h3>Fast Performance</h3>
+            <p>Lightning-fast speed optimized for scalability.</p>
+        </div>
+
+    </div>
+
+</section>
+
+<section class="reviews">
+
+    <h2 class="review-title">What Our Clients Say</h2>
+
+    <div class="review-wrapper">
+        <div class="review-track">
+
+            <!-- CARD 1 -->
+            <div class="review-card">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg">
+                <h3>Ali Khan</h3>
+                <span>CEO, TechFlow</span>
+
+                <div class="stars">
+                    ★★★★★
+                </div>
+
+                <p>
+                    This platform completely transformed how we manage our SaaS.
+                    Everything is smooth, fast, and incredibly powerful.
+                </p>
+            </div>
+
+            <!-- CARD 2 -->
+            <div class="review-card">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg">
+                <h3>Sara Malik</h3>
+                <span>Product Manager</span>
+
+                <div class="stars">
+                    ★★★★★
+                </div>
+
+                <p>
+                    The UI is stunning and the performance is unmatched.
+                    It feels like a premium enterprise solution.
+                </p>
+            </div>
+
+            <!-- CARD 3 -->
+            <div class="review-card">
+                <img src="https://randomuser.me/api/portraits/men/76.jpg">
+                <h3>Usman Raza</h3>
+                <span>Startup Founder</span>
+
+                <div class="stars">
+                    ★★★★★
+                </div>
+
+                <p>
+                    We scaled 3x faster after switching to this system.
+                    The automation features are a game changer.
+                </p>
+            </div>
+
+            <!-- CARD 4 -->
+            <div class="review-card">
+                <img src="https://randomuser.me/api/portraits/women/68.jpg">
+                <h3>Ayesha Noor</h3>
+                <span>Marketing Lead</span>
+
+                <div class="stars">
+                    ★★★★★
+                </div>
+
+                <p>
+                    Clean design, powerful tools, and seamless experience.
+                    Highly recommended for any SaaS business.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+
+<section class="pricing">
+
+    <h2 class="pricing-title">Flexible Pricing for Every Stage</h2>
+
+    <!-- TOGGLE -->
+    <!-- <div class="toggle">
+        <span>Monthly</span>
+        <label class="switch">
+            <input type="checkbox" id="priceToggle">
+            <span class="slider"></span>
+        </label>
+        <span>Yearly</span>
+    </div> -->
+
+    <div class="pricing-grid">
+
+        <!-- STARTER -->
+        <div class="price-card">
+            <h3>Starter</h3>
+            <h1 class="price" data-month="5,299" data-year="52,990">PKR 5,299</h1>
+            <p>/month</p>
+
+            <ul>
+                <li>✔ Basic Analytics</li>
+                <li>✔ 1 Project</li>
+                <li>✔ Email Support</li>
+                <li>✔ Limited Access</li>
+            </ul>
+
+            <button>Get Started</button>
+        </div>
+
+        <!-- PRO -->
+        <div class="price-card popular">
+            <div class="badge">Most Popular</div>
+
+            <h3>Pro</h3>
+            <h1 class="price" data-month="13,699" data-year="136,990">PKR 13,699</h1>
+            <p>/month</p>
+
+            <ul>
+                <li>✔ Advanced Analytics</li>
+                <li>✔ Unlimited Projects</li>
+                <li>✔ Priority Support</li>
+                <li>✔ Automation Tools</li>
+                <li>✔ API Access</li>
+            </ul>
+
+            <button onclick="openTrialModal()">Start Free Trial</button>
+        </div>
+
+        <!-- ENTERPRISE -->
+        <div class="price-card">
+            <h3>Enterprise</h3>
+            <h1 class="price" data-month="27,699" data-year="276,990">PKR 27,699</h1>
+            <p>/month</p>
+
+            <ul>
+                <li>✔ Full SaaS Control</li>
+                <li>✔ Dedicated Manager</li>
+                <li>✔ Custom Integrations</li>
+                <li>✔ 24/7 Support</li>
+            </ul>
+
+            <button>Contact Us</button>
+        </div>
+
+    </div>
+
+</section>
+
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <!-- BRAND -->
+        <div class="footer-col">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+              <svg width="38" height="38" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="42" height="42" rx="11" fill="#0f172a"/>
+                <rect x="8" y="26" width="6" height="10" rx="2" fill="#38bdf8"/>
+                <rect x="17" y="19" width="6" height="17" rx="2" fill="#38bdf8" opacity="0.8"/>
+                <rect x="26" y="12" width="6" height="24" rx="2" fill="#38bdf8" opacity="0.9"/>
+                <path d="M10 25 L19 18 L28 11 L32 7" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" fill="none" stroke-dasharray="2 2"/>
+                <circle cx="32" cy="7" r="2.5" fill="#93c5fd"/>
+              </svg>
+              <span style="display:flex;flex-direction:column;line-height:1.1">
+                <span style="font-size:1.1rem;font-weight:700;color:#0ea5e9;font-family:'Poppins',sans-serif;letter-spacing:-0.3px">Stock</span>
+                <span style="font-size:1.1rem;font-weight:300;color:#93c5fd;font-family:'Poppins',sans-serif;letter-spacing:-0.3px">Flow</span>
+              </span>
+            </div>
+            <p>
+                Powerful SaaS management platform designed to scale your business 
+                with modern tools and automation.
+            </p>
+
+            <div class="socials">
+                <i class="fab fa-facebook-f"></i>
+                <i class="fab fa-twitter"></i>
+                <i class="fab fa-linkedin-in"></i>
+                <i class="fab fa-github"></i>
+            </div>
+        </div>
+
+        <!-- LINKS -->
+        <div class="footer-col">
+            <h3>Product</h3>
+            <ul>
+                <li>Features</li>
+                <li>Pricing</li>
+                <li>Integrations</li>
+                <li>Updates</li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h3>Company</h3>
+            <ul>
+                <li>About</li>
+                <li>Careers</li>
+                <li>Blog</li>
+                <li>Contact</li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h3>Resources</h3>
+            <ul>
+                <li>Docs</li>
+                <li>Help Center</li>
+                <li>Privacy Policy</li>
+                <li>Terms</li>
+            </ul>
+        </div>
+
+        <!-- NEWSLETTER + CONTACT -->
+        <div class="footer-col">
+            <h3>Subscribe</h3>
+            <p>Get the latest updates, features and news.</p>
+
+            <div class="newsletter">
+                <input type="email" id="subEmail" placeholder="Enter your email">
+                <button onclick="subscribe()">Join</button>
+            </div>
+            <p id="subMsg" style="margin-top:8px;font-size:0.82rem;color:#3b82f6;display:none">✅ Subscribed! Thank you.</p>
+
+            <div style="margin-top:22px;border-top:1px solid rgba(255,255,255,0.07);padding-top:18px">
+                <h3 style="margin-bottom:12px">Contact Us</h3>
+                <div style="display:flex;flex-direction:column;gap:10px">
+                    <a href="/contact" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text-secondary)">
+                        <span style="width:32px;height:32px;border-radius:8px;background:rgba(0,212,255,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                            <i class="fa-solid fa-envelope" style="color:#3b82f6;font-size:13px"></i>
+                        </span>
+                        <span style="font-size:0.82rem">support@stockflow.pk</span>
+                    </a>
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <span style="width:32px;height:32px;border-radius:8px;background:rgba(34,197,94,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                            <i class="fa-brands fa-whatsapp" style="color:#22c55e;font-size:14px"></i>
+                        </span>
+                        <span style="font-size:0.82rem;color:var(--text-secondary)">+92 321 9876543</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <span style="width:32px;height:32px;border-radius:8px;background:rgba(124,77,255,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                            <i class="fa-solid fa-phone" style="color:#6366f1;font-size:13px"></i>
+                        </span>
+                        <span style="font-size:0.82rem;color:var(--text-secondary)">+92 300 1234567</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <span style="width:32px;height:32px;border-radius:8px;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                            <i class="fa-solid fa-location-dot" style="color:#f59e0b;font-size:13px"></i>
+                        </span>
+                        <span style="font-size:0.82rem;color:var(--text-secondary)">Tech Tower, Lahore, Pakistan</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BOTTOM -->
+    <div class="footer-bottom">
+        <p>© 2026 StockFlow. All rights reserved. &nbsp;|&nbsp; <a href="/contact" style="color:#3b82f6;text-decoration:none">Contact Us</a> &nbsp;|&nbsp; <i class="fa-brands fa-whatsapp" style="color:#22c55e"></i> +92 321 9876543 &nbsp;|&nbsp; <i class="fa-solid fa-envelope" style="color:#3b82f6"></i> support@stockflow.pk</p>
+    </div>
+
+</footer>
+
+<!-- ================= FREE TRIAL MODAL ================= -->
+<div id="trialModal" class="modal" style="z-index:9999">
+  <div class="modal-box" style="max-width:460px;padding:40px 36px">
+    <button onclick="closeTrialModal()" style="position:absolute;top:14px;right:18px;background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer"><i class="fa-solid fa-xmark"></i></button>
+    <h2 style="margin-bottom:6px;font-size:1.5rem">🚀 Start Your Free Trial</h2>
+    <p style="color:var(--text-muted);margin-bottom:24px;font-size:.9rem">7 days free — no credit card required. Get full access to StockFlow.</p>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <input id="trialName" type="text" placeholder="Your Full Name" style="padding:12px 16px;border-radius:10px;border:1px solid var(--stroke-light);background:var(--panel-light);color:var(--text);font-size:.95rem;outline:none">
+      <input id="trialEmail" type="email" placeholder="Business Email" style="padding:12px 16px;border-radius:10px;border:1px solid var(--stroke-light);background:var(--panel-light);color:var(--text);font-size:.95rem;outline:none">
+      <input id="trialPhone" type="text" placeholder="Phone Number (optional)" style="padding:12px 16px;border-radius:10px;border:1px solid var(--stroke-light);background:var(--panel-light);color:var(--text);font-size:.95rem;outline:none">
+      <select id="trialPlan" style="padding:12px 16px;border-radius:10px;border:1px solid var(--stroke-light);background:var(--panel-light);color:var(--text);font-size:.95rem;outline:none">
+        <option value="">Select a Plan</option>
+        <option value="starter">Starter — PKR 5,299/month</option>
+        <option value="pro">Pro — PKR 13,699/month (Most Popular)</option>
+        <option value="enterprise">Enterprise — PKR 27,699/month</option>
+      </select>
+      <button onclick="submitTrial()" style="padding:13px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;font-weight:700;font-size:1rem;border:none;cursor:pointer;letter-spacing:.4px">Activate Free Trial →</button>
+    </div>
+    <p id="trialMsg" style="margin-top:14px;text-align:center;font-size:.88rem;color:var(--primary);display:none"></p>
+  </div>
+</div>
+
+<script>
+function openTrialModal(){ document.getElementById("trialModal").classList.add("show"); }
+function closeTrialModal(){ document.getElementById("trialModal").classList.remove("show"); }
+function scrollToFeatures(){ document.getElementById("features-section").scrollIntoView({behavior:"smooth"}); }
+function submitTrial(){
+  let name=document.getElementById("trialName").value.trim();
+  let email=document.getElementById("trialEmail").value.trim();
+  let plan=document.getElementById("trialPlan").value;
+  if(!name||!email||!plan){alert("Please fill all required fields.");return;}
+  let msg=document.getElementById("trialMsg");
+  msg.style.display="block";
+  msg.textContent="✅ Trial activated! Check your email for login details.";
+  setTimeout(closeTrialModal,3000);
+}
+</script>
+
+<!-- ================= LOGOUT MODAL ================= -->
+<div id="logoutModal" class="modal">
+
+  <div class="modal-box">
+    <h2>Confirm Logout</h2>
+    <p>Are you sure you want to logout?</p>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-logout" onclick="confirmLogout()">Logout</button>
+    </div>
+
+  </div>
+
+</div>
+<script>
+
+/* OPEN MODAL */
+function logout(){
+    document.getElementById("logoutModal").classList.add("show");
+}
+
+/* CLOSE MODAL */
+function closeModal(){
+    document.getElementById("logoutModal").classList.remove("show");
+}
+
+/* CONFIRM LOGOUT */
+async function confirmLogout(){
+
+    try {
+        let res = await fetch("/logout", {
+            method: "GET",
+            credentials: "include"
+        });
+
+        // clear frontend storage
+        localStorage.clear();
+        sessionStorage.clear();
+
+        // redirect to login page
+        window.location.href = "/";
+
+    } catch (err) {
+        console.log(err);
+        alert("Logout failed");
+    }
+}
+
+</script>
+<script>
+async function logoutUser() {
+
+    try {
+        let res = await fetch("/logout", {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (res.ok) {
+            window.location.href = "/";   // 👈 login page
+        } else {
+            alert("Logout failed");
+        }
+
+    } catch (err) {
+        console.log(err);
+        alert("Server error");
+    }
+}
+</script>
+
+<script>
+function subscribe(){
+  var email = document.getElementById("subEmail").value.trim();
+  if(!email || !email.includes("@")){ alert("Please enter a valid email address."); return; }
+  var msg = document.getElementById("subMsg");
+  msg.style.display = "block";
+  document.getElementById("subEmail").value = "";
+  setTimeout(function(){ msg.style.display = "none"; }, 5000);
+}
+</script>
+
+<!-- ================= SETTINGS PANEL ================= -->
+<div id="settingsOverlay" onclick="closeSettings()" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);z-index:9998;opacity:0;visibility:hidden;transition:all 0.3s"></div>
+
+<div id="settingsPanel" style="
+  position:fixed;top:0;left:-340px;width:320px;height:100vh;
+  background:linear-gradient(180deg,#111827 0%,#0d1117 100%);
+  border-right:1px solid rgba(255,255,255,0.1);
+  z-index:9999;transition:left 0.35s cubic-bezier(0.4,0,0.2,1);
+  overflow-y:auto;padding:0 0 40px;
+  box-shadow:10px 0 60px rgba(0,0,0,0.5)
+">
+
+  <!-- HEADER -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.07)">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#0ea5e9,#6366f1);display:flex;align-items:center;justify-content:center">
+        <i class="fa-solid fa-sliders" style="color:white;font-size:14px"></i>
+      </div>
+      <span style="color:#e6edf7;font-weight:700;font-size:1rem">Settings</span>
+    </div>
+    <button onclick="closeSettings()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;width:32px;height:32px;color:#8a94a6;cursor:pointer;font-size:16px">✕</button>
+  </div>
+
+  <!-- APPEARANCE -->
+  <div style="padding:22px 24px">
+    <p style="font-size:10px;color:#8a94a6;text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:14px">Appearance</p>
+
+    <!-- DARK / LIGHT TOGGLE -->
+    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span id="themeIcon" style="font-size:18px">🌙</span>
+          <div>
+            <p style="color:#e6edf7;font-size:13px;font-weight:600" id="themeLabel">Dark Mode</p>
+            <p style="color:#8a94a6;font-size:11px">Currently active</p>
+          </div>
+        </div>
+        <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer">
+          <input type="checkbox" id="themeToggle" onchange="toggleTheme()" checked style="opacity:0;width:0;height:0">
+          <span id="themeSlider" style="position:absolute;inset:0;border-radius:24px;background:#0ea5e9;transition:.3s;cursor:pointer">
+            <span style="position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:.3s;transform:translateX(20px)" id="thumbDot"></span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <!-- COLOR THEME -->
+    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;margin-bottom:10px">
+      <p style="color:#e6edf7;font-size:13px;font-weight:600;margin-bottom:12px">Accent Color</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <div onclick="setAccent('#0ea5e9')" title="Sky Blue" style="width:28px;height:28px;border-radius:50%;background:#0ea5e9;cursor:pointer;border:2px solid white" id="accent-blue"></div>
+        <div onclick="setAccent('#6366f1')" title="Purple" style="width:28px;height:28px;border-radius:50%;background:#6366f1;cursor:pointer;border:2px solid transparent"></div>
+        <div onclick="setAccent('#22c55e')" title="Green" style="width:28px;height:28px;border-radius:50%;background:#22c55e;cursor:pointer;border:2px solid transparent"></div>
+        <div onclick="setAccent('#f97316')" title="Orange" style="width:28px;height:28px;border-radius:50%;background:#f97316;cursor:pointer;border:2px solid transparent"></div>
+        <div onclick="setAccent('#ec4899')" title="Pink" style="width:28px;height:28px;border-radius:50%;background:#ec4899;cursor:pointer;border:2px solid transparent"></div>
+        <div onclick="setAccent('#f59e0b')" title="Amber" style="width:28px;height:28px;border-radius:50%;background:#f59e0b;cursor:pointer;border:2px solid transparent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FONT SIZE -->
+  <div style="padding:0 24px">
+    <p style="font-size:10px;color:#8a94a6;text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:14px">Font Size</p>
+    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span style="color:#e6edf7;font-size:13px;font-weight:600">Text Size</span>
+        <span id="fontSizeLabel" style="color:#0ea5e9;font-size:12px;font-weight:700">16px</span>
+      </div>
+      <input type="range" id="fontSizeRange" min="13" max="20" value="16" step="1"
+        oninput="setFontSize(this.value)"
+        style="width:100%;accent-color:#0ea5e9;cursor:pointer">
+      <div style="display:flex;justify-content:space-between;margin-top:6px">
+        <span style="color:#8a94a6;font-size:10px">Small</span>
+        <span style="color:#8a94a6;font-size:10px">Large</span>
+      </div>
+    </div>
+
+    <!-- FONT PRESETS -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+      <button onclick="setFontSize(13);document.getElementById('fontSizeRange').value=13" style="padding:8px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);color:#8a94a6;font-size:11px;cursor:pointer">Small</button>
+      <button onclick="setFontSize(16);document.getElementById('fontSizeRange').value=16" style="padding:8px;border-radius:8px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:#0ea5e9;font-size:12px;cursor:pointer;font-weight:700">Default</button>
+      <button onclick="setFontSize(19);document.getElementById('fontSizeRange').value=19" style="padding:8px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);color:#8a94a6;font-size:13px;cursor:pointer">Large</button>
+    </div>
+  </div>
+
+  <!-- LAYOUT -->
+  <div style="padding:0 24px">
+    <p style="font-size:10px;color:#8a94a6;text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:14px">Layout</p>
+    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <p style="color:#e6edf7;font-size:13px;font-weight:600">Compact Navbar</p>
+          <p style="color:#8a94a6;font-size:11px">Reduce navbar height</p>
+        </div>
+        <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer">
+          <input type="checkbox" id="compactToggle" onchange="toggleCompact()" style="opacity:0;width:0;height:0">
+          <span id="compactSlider" style="position:absolute;inset:0;border-radius:24px;background:rgba(255,255,255,0.1);transition:.3s;cursor:pointer">
+            <span style="position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#8a94a6;transition:.3s" id="compactDot"></span>
+          </span>
+        </label>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <p style="color:#e6edf7;font-size:13px;font-weight:600">Hide Nav Icons</p>
+          <p style="color:#8a94a6;font-size:11px">Text links only</p>
+        </div>
+        <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer">
+          <input type="checkbox" id="iconsToggle" onchange="toggleIcons()" style="opacity:0;width:0;height:0">
+          <span id="iconsSlider" style="position:absolute;inset:0;border-radius:24px;background:rgba(255,255,255,0.1);transition:.3s;cursor:pointer">
+            <span style="position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#8a94a6;transition:.3s" id="iconsDot"></span>
+          </span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESET -->
+  <div style="padding:0 24px;margin-top:8px">
+    <button onclick="resetSettings()" style="width:100%;padding:11px;border-radius:10px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#ef4444;font-size:13px;font-weight:600;cursor:pointer">
+      <i class="fa-solid fa-rotate-left" style="margin-right:6px"></i>Reset to Defaults
+    </button>
+  </div>
+
+</div>
+
+<script>
+/* ===== SETTINGS PANEL ===== */
+function openSettings(){
+  document.getElementById("settingsPanel").style.left = "0";
+  document.getElementById("settingsOverlay").style.opacity = "1";
+  document.getElementById("settingsOverlay").style.visibility = "visible";
+}
+function closeSettings(){
+  document.getElementById("settingsPanel").style.left = "-340px";
+  document.getElementById("settingsOverlay").style.opacity = "0";
+  document.getElementById("settingsOverlay").style.visibility = "hidden";
+}
+
+/* ===== DARK / LIGHT MODE ===== */
+function toggleTheme(){
+  var isDark = document.getElementById("themeToggle").checked;
+  var root = document.documentElement;
+  var thumb = document.getElementById("thumbDot");
+  var slider = document.getElementById("themeSlider");
+  if(isDark){
+    root.style.setProperty("--bg","#0d1117");
+    root.style.setProperty("--bg-alt","#090d14");
+    root.style.setProperty("--panel","#111827");
+    root.style.setProperty("--panel-light","#1f2937");
+    root.style.setProperty("--text","#e6edf7");
+    root.style.setProperty("--text-secondary","#b4bcc8");
+    root.style.setProperty("--text-muted","#8a94a6");
+    document.body.style.background = "#0d1117";
+    document.body.style.color = "#e6edf7";
+    document.getElementById("themeIcon").textContent = "🌙";
+    document.getElementById("themeLabel").textContent = "Dark Mode";
+    thumb.style.transform = "translateX(20px)";
+    slider.style.background = "#0ea5e9";
+  } else {
+    root.style.setProperty("--bg","#f0f4f8");
+    root.style.setProperty("--bg-alt","#e2e8f0");
+    root.style.setProperty("--panel","#ffffff");
+    root.style.setProperty("--panel-light","#f8fafc");
+    root.style.setProperty("--text","#1e293b");
+    root.style.setProperty("--text-secondary","#475569");
+    root.style.setProperty("--text-muted","#64748b");
+    document.body.style.background = "#f0f4f8";
+    document.body.style.color = "#1e293b";
+    document.getElementById("themeIcon").textContent = "☀️";
+    document.getElementById("themeLabel").textContent = "Light Mode";
+    thumb.style.transform = "translateX(0px)";
+    slider.style.background = "#64748b";
+  }
+}
+
+/* ===== ACCENT COLOR ===== */
+function setAccent(color){
+  document.documentElement.style.setProperty("--primary", color);
+  document.documentElement.style.setProperty("--primary-dark", color);
+  document.querySelectorAll("[id^='accent-']").forEach(d => d.style.border = "2px solid transparent");
+  document.getElementById("fontSizeRange").style.accentColor = color;
+}
+
+/* ===== FONT SIZE ===== */
+function setFontSize(size){
+  document.documentElement.style.fontSize = size + "px";
+  document.getElementById("fontSizeLabel").textContent = size + "px";
+}
+
+/* ===== COMPACT NAVBAR ===== */
+function toggleCompact(){
+  var on = document.getElementById("compactToggle").checked;
+  var dot = document.getElementById("compactDot");
+  var slider = document.getElementById("compactSlider");
+  var navbar = document.querySelector(".navbar");
+  if(on){
+    navbar.style.height = "48px";
+    dot.style.transform = "translateX(20px)";
+    dot.style.background = "#0ea5e9";
+    slider.style.background = "rgba(14,165,233,0.3)";
+  } else {
+    navbar.style.height = "64px";
+    dot.style.transform = "translateX(0)";
+    dot.style.background = "#8a94a6";
+    slider.style.background = "rgba(255,255,255,0.1)";
+  }
+}
+
+/* ===== HIDE ICONS ===== */
+function toggleIcons(){
+  var on = document.getElementById("iconsToggle").checked;
+  var dot = document.getElementById("iconsDot");
+  var slider = document.getElementById("iconsSlider");
+  document.querySelectorAll(".nav-links li a i").forEach(i => i.style.display = on ? "none" : "");
+  if(on){
+    dot.style.transform = "translateX(20px)";
+    dot.style.background = "#0ea5e9";
+    slider.style.background = "rgba(14,165,233,0.3)";
+  } else {
+    dot.style.transform = "translateX(0)";
+    dot.style.background = "#8a94a6";
+    slider.style.background = "rgba(255,255,255,0.1)";
+  }
+}
+
+/* ===== RESET ===== */
+function resetSettings(){
+  document.documentElement.style.cssText = "";
+  document.body.style.cssText = "";
+  document.getElementById("themeToggle").checked = true;
+  document.getElementById("compactToggle").checked = false;
+  document.getElementById("iconsToggle").checked = false;
+  document.getElementById("fontSizeRange").value = 16;
+  document.getElementById("fontSizeLabel").textContent = "16px";
+  document.getElementById("themeIcon").textContent = "🌙";
+  document.getElementById("themeLabel").textContent = "Dark Mode";
+  document.getElementById("thumbDot").style.transform = "translateX(20px)";
+  document.getElementById("themeSlider").style.background = "#0ea5e9";
+  document.getElementById("compactDot").style.transform = "translateX(0)";
+  document.getElementById("compactDot").style.background = "#8a94a6";
+  document.getElementById("compactSlider").style.background = "rgba(255,255,255,0.1)";
+  document.getElementById("iconsDot").style.transform = "translateX(0)";
+  document.getElementById("iconsDot").style.background = "#8a94a6";
+  document.getElementById("iconsSlider").style.background = "rgba(255,255,255,0.1)";
+  document.querySelectorAll(".nav-links li a i").forEach(i => i.style.display = "");
+  document.querySelector(".navbar").style.height = "64px";
+}
+</script>
+
+</body>
+</html>
